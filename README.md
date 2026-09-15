@@ -1,78 +1,42 @@
-# RESTful Consumer API Documentation
+# SportsVisio Public API docs
 
-This repository contains documentation and infrastructure-as-code for deploying API documentation to AWS.
-
-## Repository Structure
+The hand-written public API documentation served at **https://api.sportsvisio.com/**.
 
 ```
-.
-├── docs/              # Documentation files
-│   └── index.html     # API documentation (SportsVisio API)
-├── terraform/         # Infrastructure as Code
-│   ├── main.tf        # AWS S3 + CloudFront configuration
-│   ├── variables.tf   # Configuration variables
-│   ├── outputs.tf     # Terraform outputs
-│   └── README.md      # Deployment instructions
-└── README.md          # This file
+docs/
+  index.html   the whole site (one page: guides + endpoint reference)
+  styles.css
+  scripts.js   search, collapsible endpoint cards, copy buttons
 ```
 
-## Overview
+No build step, no dependencies, no framework. Open `docs/index.html` in a browser to
+preview exactly what production serves.
 
-This repository provides:
+## Deployment
 
-- **API Documentation**: Static HTML documentation for RESTful APIs
-- **AWS Infrastructure**: Terraform configuration to deploy documentation to S3 with CloudFront CDN
-- **Cost Optimized**: 100% AWS Free Tier eligible deployment
+Render static site **`api-docs`**, declared in [`svisio/sv`'s `render.yaml`](https://github.com/svisio/sv)
+(`publishPath: ./docs`, `autoDeploy: true`). Push to `main` and Render publishes it —
+there is intentionally no `render.yaml` in this repo, so two blueprints never fight over
+the same service.
 
-## Quick Start
+History: this started as an S3 + CloudFront deployment driven by a `terraform/` directory
+here (`docs.sportsvisio-api.com`). That bucket and distribution were deleted, the site moved
+to a hand-deployed Vercel project, and it now runs on Render. The terraform was removed in
+the same commit series that imported the live site — see git history if you ever need it.
 
-### View Documentation Locally
+## Editing
 
-Open [docs/index.html](docs/index.html) in your browser to view the documentation locally.
+Edit `docs/index.html` directly. Two sections with different rules:
 
-### Deploy to AWS
+- **Guides** (Getting Started, Scheduling Games, Accessing Game Data) — written by hand.
+  Anything you claim here must be checked against the API, not remembered. This is where a
+  wrong `offset` parameter sat long enough for a consumer to build a workaround around it.
+- **API Reference** (the collapsible endpoint cards) — transcribed from the OpenAPI spec that
+  `svisio/api` serves at `/api-docs/public`. When the spec changes, update the matching card.
+  It is currently behind the spec in places (e.g. `limit` is documented there as
+  "clamped to 50").
 
-1. Navigate to the terraform directory:
-   ```bash
-   cd terraform
-   ```
-
-2. Follow the instructions in [terraform/README.md](terraform/README.md) to deploy to AWS
-
-3. Access your documentation via the CloudFront URL provided after deployment
-
-## Features
-
-- Static HTML documentation with modern, responsive design
-- AWS S3 hosting with CloudFront CDN for global distribution
-- HTTPS enabled by default
-- Zero cost with AWS Free Tier
-- Infrastructure as Code with Terraform
-
-## Documentation
-
-- **API Documentation**: Located in [docs/](docs/) directory
-- **Deployment Guide**: See [terraform/README.md](terraform/README.md)
-
-## Cost Information
-
-The infrastructure is designed to be completely free under AWS Free Tier:
-
-- S3: First 5GB storage free
-- CloudFront: 1TB data transfer free for 12 months
-- No custom domain (avoids Route53 costs)
-- Default SSL certificate (free)
-
-For detailed cost information, see [terraform/README.md](terraform/README.md#cost-optimization).
-
-## Contributing
-
-To update the API documentation:
-
-1. Edit files in the [docs/](docs/) directory
-2. Test locally by opening HTML files in a browser
-3. Deploy changes using `terraform apply` from the terraform directory
-
-## License
+The API host in examples is `https://api.sportsvisio-api.com` (prod). This repo's own
+domain, `api.sportsvisio.com`, serves only these docs.
 
 Copyright 2026 Sports Visio Inc. All rights reserved.
