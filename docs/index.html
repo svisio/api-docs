@@ -719,7 +719,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 </div>
 <div class="code-block">
 <div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre><code>curl -X GET "https://api.sportsvisio-api.com/programs/divisions/games/list/{programId}/{eventId}/{divisionId}?limit=10&offset=0" \
+<pre><code>curl -X GET "https://api.sportsvisio-api.com/programs/divisions/games/list/{programId}/{eventId}/{divisionId}?limit=10&start=0" \
   -H "Authorization: Bearer YOUR_TOKEN"</code></pre>
 </div>
 <div class="code-block">
@@ -819,7 +819,20 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   ]
 }</code></pre>
 </div>
-<p style="margin-top: 16px;">The response includes pagination metadata (<code>meta</code>) and an array of games (<code>items</code>). Use the <code>limit</code> and <code>offset</code> query parameters to paginate through results.</p>
+<p style="margin-top: 16px;">The response includes pagination metadata (<code>meta</code>) and an array of games (<code>items</code>). Use the <code>limit</code> and <code>start</code> query parameters to paginate through results.</p>
+<div class="info-box" style="margin-top: 16px;">
+  <strong>Pagination, sorting and filtering:</strong>
+  <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+    <li><code>limit</code> — page size, default 25 and <strong>capped at 50</strong>. Larger values are silently clamped to 50, not rejected.</li>
+    <li><code>start</code> — zero-based offset of the first record. This is the request parameter; the response echoes it back as <code>meta.offset</code>. There is no <code>offset</code> or <code>page</code> request parameter.</li>
+    <li><code>meta.total</code> — total matching records, so the number of pages is <code>ceil(total / limit)</code>.</li>
+    <li><code>column</code> / <code>direction</code> — sorting, e.g. <code>column=game.startTime&amp;direction=ASC</code>.</li>
+    <li><code>before</code> / <code>after</code> — inclusive Unix-second bounds on the game <code>startTime</code>.</li>
+    <li><code>status</code>, <code>teamId</code>, <code>teamIds</code>, <code>search</code> — additional filters.</li>
+  </ul>
+  <p style="margin: 8px 0 0 0;">Query parameters are strictly whitelisted: anything unrecognised fails with <code>400 property &lt;name&gt; should not exist</code>.</p>
+  <p style="margin: 8px 0 0 0;">To retrieve a whole division in a single call, use <code>GET /programs/divisions/games/list-all/{programId}/{eventId}/{divisionId}</code>. It is <strong>not</strong> paginated — it returns every game for the PED ordered by <code>startTime</code>, and accepts the optional <code>status</code> (repeat the parameter for multiple values) and <code>sortDirection</code>.</p>
+</div>
 </div>
 
 <!-- 7.1 Basic Game Info -->
