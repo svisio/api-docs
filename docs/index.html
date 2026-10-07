@@ -37,9 +37,11 @@
   <a href="#step-game-info" class="sidebar-link sub" onclick="closeMobile()">Game Information</a>
   <a href="#step-ai-summaries" class="sidebar-link sub" onclick="closeMobile()">AI Summaries</a>
   <a href="#step-player-stats" class="sidebar-link sub" onclick="closeMobile()">Player Statistics</a>
+  <a href="#step-game-feed" class="sidebar-link sub" onclick="closeMobile()">Actions &amp; Clips</a>
 
   <div class="sidebar-section">API Reference</div>
   <a href="#tag-users" class="sidebar-link" onclick="closeMobile()">Users <span class="link-badge get">1</span></a>
+  <a href="#tag-annotations" class="sidebar-link" onclick="closeMobile()">Annotations <span class="link-badge get">1</span></a>
   <a href="#tag-annotation-statistics" class="sidebar-link" onclick="closeMobile()">Annotation Statistics <span class="link-badge get">1</span></a>
   <a href="#tag-uploads" class="sidebar-link" onclick="closeMobile()">Uploads <span class="link-badge post">1</span></a>
   <a href="#tag-multipart-uploads" class="sidebar-link" onclick="closeMobile()">Multipart Uploads <span class="link-badge post">1</span></a>
@@ -1009,6 +1011,173 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   <strong>Tip:</strong> To build season leaderboards, call this endpoint for each completed game in the division and aggregate the stats per player across all games.
 </div>
 </div>
+<h3 id="step-game-feed" style="margin-top: 32px;">Getting Every Action and Clip</h3>
+
+<div class="info-box tip">
+  <strong>Start here for video.</strong> One call returns the whole game: both rosters with
+  player profiles, then every tracked action &mdash; each with its own clip URL. This is the
+  endpoint to use for per-player highlights, not just the 90-second game reel.
+</div>
+
+<div class="scenario-step">
+<div class="scenario-step-header">
+  <span class="step-number">4</span>
+  <h4>Get the Game Feed</h4>
+</div>
+<p>Teams and rosters are listed once at the top; each action then points back at them with
+<code>teamId</code> and <code>playerId</code>, so nothing is repeated per action.</p>
+<div class="code-block">
+<div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code>curl -X GET "https://api.sportsvisio-api.com/annotations/game-feed/{gameId}" \
+  -H "Authorization: Bearer YOUR_TOKEN"</code></pre>
+</div>
+<div class="code-block">
+<div class="code-block-header"><span>Response (truncated)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code>{
+  "game": {
+    "id": "38bfb741-198e-4805-a6ea-da5628e533cf",
+    "startTime": 1789851600,
+    "endTime": 1789858800,
+    "timezone": "Europe/Riga",
+    "sportId": "basketball",
+    "highlightUrl": "https://api.sportsvisio-api.com/media/38bfb741-198e-4805-a6ea-da5628e533cf/game_highlights/highlights90secs.mp4",
+    "actionCount": 343,
+    "clipCount": 334
+  },
+  "teams": [
+    {
+      "id": "2c3ce5aa-3c8f-41c4-9688-cf77ba52abc1",
+      "name": "Šiauliu KA Saule-ŠSG",
+      "shortName": null,
+      "designation": "Home",
+      "color": "black",
+      "score": 39,
+      "roster": [
+        {
+          "playerId": "f9440fdb-f3d6-4326-8a7a-167c61b6c0a0",
+          "name": "Henrikas Remeika",
+          "number": "1",
+          "starter": true,
+          "minutesPlayed": 17,
+          "imageUrl": null,
+          "profile": {
+            "id": "7514596f-2989-4733-8dbc-9d2d16ded19b",
+            "firstName": "Henrikas",
+            "lastName": "Remeika",
+            "nickName": null,
+            "imageUrl": "https://cdn.filestackcontent.com/01BXKJlTWqKpOuOeE6vg",
+            "vitals": {
+              "height": 1.93,
+              "preferredPositions": [
+                "guard"
+              ]
+            },
+            "socials": null
+          }
+        },
+        {
+          "playerId": "4ba93f2f-d0c9-429b-9495-9d15e82945e5",
+          "name": "Motiejus Čepulis",
+          "number": "25",
+          "starter": false,
+          "minutesPlayed": 17,
+          "imageUrl": null,
+          "profile": null
+        }
+      ]
+    },
+    {
+      "id": "5e13582a-452d-4549-82b1-22649626761f",
+      "name": "Jelgava BJSS",
+      "shortName": null,
+      "designation": "Away",
+      "color": "white",
+      "score": 56,
+      "roster": [
+        {
+          "playerId": "67838541-39bf-4c54-94a3-69930a73c1eb",
+          "name": "Player-5",
+          "number": "5",
+          "starter": false,
+          "minutesPlayed": 22,
+          "imageUrl": null,
+          "profile": null
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "06abafa1-7ded-4195-9654-65a71ab3b11d",
+      "type": "shooting",
+      "qualifiers": [
+        "2-point",
+        "made"
+      ],
+      "videoTimecode": "01:10:48:26",
+      "teamId": "2c3ce5aa-3c8f-41c4-9688-cf77ba52abc1",
+      "playerId": "f9440fdb-f3d6-4326-8a7a-167c61b6c0a0",
+      "secondaryPlayerId": "4ba93f2f-d0c9-429b-9495-9d15e82945e5",
+      "clipUrl": "https://api.sportsvisio-api.com/media/38bfb741-198e-4805-a6ea-da5628e533cf/be3dbda3-ac12-4982-acb8-3f225635e921/06abafa1-7ded-4195-9654-65a71ab3b11d/clip.mp4",
+      "clipThumbUrl": "https://api.sportsvisio-api.com/media/38bfb741-198e-4805-a6ea-da5628e533cf/be3dbda3-ac12-4982-acb8-3f225635e921/06abafa1-7ded-4195-9654-65a71ab3b11d/clip.0000001.jpg",
+      "fireballUrl": null
+    },
+    {
+      "id": "02e4b51c-733e-4025-a539-bd175fc0a989",
+      "type": "shooting",
+      "qualifiers": [
+        "1-point",
+        "made"
+      ],
+      "videoTimecode": "01:12:27:06",
+      "teamId": "2c3ce5aa-3c8f-41c4-9688-cf77ba52abc1",
+      "playerId": "f9440fdb-f3d6-4326-8a7a-167c61b6c0a0",
+      "secondaryPlayerId": null,
+      "clipUrl": null,
+      "clipThumbUrl": null,
+      "fireballUrl": null
+    },
+    {
+      "id": "02fa08b6-014b-40dd-b16c-7f9c33c44587",
+      "type": "jump-ball",
+      "qualifiers": [],
+      "videoTimecode": "00:13:13:05",
+      "teamId": "5e13582a-452d-4549-82b1-22649626761f",
+      "playerId": null,
+      "secondaryPlayerId": null,
+      "clipUrl": null,
+      "clipThumbUrl": null,
+      "fireballUrl": null
+    }
+  ]
+}</code></pre>
+</div>
+
+<div class="info-box warning">
+  <strong>Final-approved only:</strong> this endpoint returns <code>409</code> until the game
+  reaches <code>final-approved</code> status, which is the point its action list stops changing.
+</div>
+
+<h4 style="margin-top: 16px;">Working with the feed</h4>
+<table class="param-table">
+<thead><tr><th>You want</th><th>Do this</th></tr></thead>
+<tbody>
+<tr><td>Every clip in the game</td><td>Filter <code>actions</code> where <code>clipUrl</code> is not <code>null</code>.</td></tr>
+<tr><td>One player's clips</td><td>Find the player in <code>teams[].roster[]</code>, then filter <code>actions</code> by their <code>playerId</code>.</td></tr>
+<tr><td>Only scoring plays</td><td>Filter <code>actions</code> where <code>type</code> is <code>"shooting"</code> and <code>qualifiers</code> contains <code>"made"</code>.</td></tr>
+<tr><td>A player's assists</td><td>Filter where <code>type</code> is <code>"assist-2"</code>, or read <code>secondaryPlayerId</code> on made shots.</td></tr>
+<tr><td>To seek in the full game video</td><td>Use <code>videoTimecode</code> (<code>HH:MM:SS:FF</code>), the action's offset into the game recording.</td></tr>
+</tbody>
+</table>
+
+<div class="info-box">
+  <strong>Clips are rendered asynchronously.</strong> An action is always returned; its
+  <code>clipUrl</code> is <code>null</code> until the render lands. Compare
+  <code>game.clipCount</code> against <code>game.actionCount</code> to see how far along a
+  game is, and re-request later for the rest.
+</div>
+</div>
+
 </section>
 
 <!-- API Reference -->
@@ -1242,6 +1411,174 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
 <pre><code>curl -X GET &quot;https://api.sportsvisio-api.com/users/{userId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
+</div></div>
+
+</div>
+
+<!-- Annotations -->
+<div class="tag-group" id="tag-annotations">
+<div class="tag-group-header"><h3>Annotations</h3><span class="tag-count">1 endpoint</span></div>
+
+<div class="endpoint-card" id="get-annotations-game-feed-scheduledGameId" data-search="get annotations game feed scheduledgameid clips actions roster players profiles complete feed final-approved game video highlights authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge get">GET</span>
+<span class="endpoint-path">/annotations/game-feed/{scheduledGameId}</span>
+<span class="endpoint-summary">Get the complete feed for a final-approved game</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('get-annotations-game-feed-scheduledGameId')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<p class="endpoint-desc">The whole game in one call: both teams with their rosters and player profiles, then every approved action referencing them by <code>teamId</code> / <code>playerId</code>. Actions are returned whether or not a clip has been rendered &mdash; <code>clipUrl</code> is <code>null</code> until one lands. Ordered by position in the game video (<code>videoTimecode</code>). Returns <code>409</code> until the game reaches final-approved, which is the point its action list stops moving.</p>
+<h4>Parameters</h4>
+<div class="param-tabs">
+<button class="param-tab active" onclick="switchParamTab(event, 'req-gfeed1a2b', 'opt-gfeed3c4d')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-gfeed3c4d', 'req-gfeed1a2b')">Optional</button>
+</div>
+<div id="req-gfeed1a2b" class="param-tab-content active">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Scheduled game UUID</td></tr>
+</tbody></table>
+</div>
+<div id="opt-gfeed3c4d" class="param-tab-content">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+</div>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 Success</span><span class="response-code error">409 The game is not final-approved yet</span></div>
+<div class="response-body response-body-collapsed" id="get-annotations-game-feed-scheduledGameId-response-200" data-lines="118">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('get-annotations-game-feed-scheduledGameId-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">{
+  &quot;game&quot;: {
+    &quot;id&quot;: &quot;38bfb741-198e-4805-a6ea-da5628e533cf&quot;,
+    &quot;startTime&quot;: 1789851600,
+    &quot;endTime&quot;: 1789858800,
+    &quot;timezone&quot;: &quot;Europe/Riga&quot;,
+    &quot;sportId&quot;: &quot;basketball&quot;,
+    &quot;highlightUrl&quot;: &quot;https://api.sportsvisio-api.com/media/38bfb741-198e-4805-a6ea-da5628e533cf/game_highlights/highlights90secs.mp4&quot;,
+    &quot;actionCount&quot;: 343,
+    &quot;clipCount&quot;: 334
+  },
+  &quot;teams&quot;: [
+    {
+      &quot;id&quot;: &quot;2c3ce5aa-3c8f-41c4-9688-cf77ba52abc1&quot;,
+      &quot;name&quot;: &quot;Šiauliu KA Saule-ŠSG&quot;,
+      &quot;shortName&quot;: null,
+      &quot;designation&quot;: &quot;Home&quot;,
+      &quot;color&quot;: &quot;black&quot;,
+      &quot;score&quot;: 39,
+      &quot;roster&quot;: [
+        {
+          &quot;playerId&quot;: &quot;f9440fdb-f3d6-4326-8a7a-167c61b6c0a0&quot;,
+          &quot;name&quot;: &quot;Henrikas Remeika&quot;,
+          &quot;number&quot;: &quot;1&quot;,
+          &quot;starter&quot;: true,
+          &quot;minutesPlayed&quot;: 17,
+          &quot;imageUrl&quot;: null,
+          &quot;profile&quot;: {
+            &quot;id&quot;: &quot;7514596f-2989-4733-8dbc-9d2d16ded19b&quot;,
+            &quot;firstName&quot;: &quot;Henrikas&quot;,
+            &quot;lastName&quot;: &quot;Remeika&quot;,
+            &quot;nickName&quot;: null,
+            &quot;imageUrl&quot;: &quot;https://cdn.filestackcontent.com/01BXKJlTWqKpOuOeE6vg&quot;,
+            &quot;vitals&quot;: {
+              &quot;height&quot;: 1.93,
+              &quot;preferredPositions&quot;: [
+                &quot;guard&quot;
+              ]
+            },
+            &quot;socials&quot;: null
+          }
+        },
+        {
+          &quot;playerId&quot;: &quot;4ba93f2f-d0c9-429b-9495-9d15e82945e5&quot;,
+          &quot;name&quot;: &quot;Motiejus Čepulis&quot;,
+          &quot;number&quot;: &quot;25&quot;,
+          &quot;starter&quot;: false,
+          &quot;minutesPlayed&quot;: 17,
+          &quot;imageUrl&quot;: null,
+          &quot;profile&quot;: null
+        }
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;5e13582a-452d-4549-82b1-22649626761f&quot;,
+      &quot;name&quot;: &quot;Jelgava BJSS&quot;,
+      &quot;shortName&quot;: null,
+      &quot;designation&quot;: &quot;Away&quot;,
+      &quot;color&quot;: &quot;white&quot;,
+      &quot;score&quot;: 56,
+      &quot;roster&quot;: [
+        {
+          &quot;playerId&quot;: &quot;67838541-39bf-4c54-94a3-69930a73c1eb&quot;,
+          &quot;name&quot;: &quot;Player-5&quot;,
+          &quot;number&quot;: &quot;5&quot;,
+          &quot;starter&quot;: false,
+          &quot;minutesPlayed&quot;: 22,
+          &quot;imageUrl&quot;: null,
+          &quot;profile&quot;: null
+        }
+      ]
+    }
+  ],
+  &quot;actions&quot;: [
+    {
+      &quot;id&quot;: &quot;06abafa1-7ded-4195-9654-65a71ab3b11d&quot;,
+      &quot;type&quot;: &quot;shooting&quot;,
+      &quot;qualifiers&quot;: [
+        &quot;2-point&quot;,
+        &quot;made&quot;
+      ],
+      &quot;videoTimecode&quot;: &quot;01:10:48:26&quot;,
+      &quot;teamId&quot;: &quot;2c3ce5aa-3c8f-41c4-9688-cf77ba52abc1&quot;,
+      &quot;playerId&quot;: &quot;f9440fdb-f3d6-4326-8a7a-167c61b6c0a0&quot;,
+      &quot;secondaryPlayerId&quot;: &quot;4ba93f2f-d0c9-429b-9495-9d15e82945e5&quot;,
+      &quot;clipUrl&quot;: &quot;https://api.sportsvisio-api.com/media/38bfb741-198e-4805-a6ea-da5628e533cf/be3dbda3-ac12-4982-acb8-3f225635e921/06abafa1-7ded-4195-9654-65a71ab3b11d/clip.mp4&quot;,
+      &quot;clipThumbUrl&quot;: &quot;https://api.sportsvisio-api.com/media/38bfb741-198e-4805-a6ea-da5628e533cf/be3dbda3-ac12-4982-acb8-3f225635e921/06abafa1-7ded-4195-9654-65a71ab3b11d/clip.0000001.jpg&quot;,
+      &quot;fireballUrl&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;02e4b51c-733e-4025-a539-bd175fc0a989&quot;,
+      &quot;type&quot;: &quot;shooting&quot;,
+      &quot;qualifiers&quot;: [
+        &quot;1-point&quot;,
+        &quot;made&quot;
+      ],
+      &quot;videoTimecode&quot;: &quot;01:12:27:06&quot;,
+      &quot;teamId&quot;: &quot;2c3ce5aa-3c8f-41c4-9688-cf77ba52abc1&quot;,
+      &quot;playerId&quot;: &quot;f9440fdb-f3d6-4326-8a7a-167c61b6c0a0&quot;,
+      &quot;secondaryPlayerId&quot;: null,
+      &quot;clipUrl&quot;: null,
+      &quot;clipThumbUrl&quot;: null,
+      &quot;fireballUrl&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;02fa08b6-014b-40dd-b16c-7f9c33c44587&quot;,
+      &quot;type&quot;: &quot;jump-ball&quot;,
+      &quot;qualifiers&quot;: [],
+      &quot;videoTimecode&quot;: &quot;00:13:13:05&quot;,
+      &quot;teamId&quot;: &quot;5e13582a-452d-4549-82b1-22649626761f&quot;,
+      &quot;playerId&quot;: null,
+      &quot;secondaryPlayerId&quot;: null,
+      &quot;clipUrl&quot;: null,
+      &quot;clipThumbUrl&quot;: null,
+      &quot;fireballUrl&quot;: null
+    }
+  ]
+}</code>
+</div>
+</div>
+</div>
 </div></div>
 
 </div>
