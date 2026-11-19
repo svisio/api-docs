@@ -16,7 +16,7 @@
 <!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
 <div class="sidebar-header">
-  <div class="sidebar-logo">Sports<span>Visio</span></div>
+  <a href="#overview" class="sidebar-logo"><img src="sportsvisio-logo.svg" alt="SportsVisio" width="140" height="19"></a>
   <div class="sidebar-subtitle">Public API</div>
 </div>
 <div class="sidebar-nav">
@@ -41,16 +41,17 @@
 
   <div class="sidebar-section">API Reference</div>
   <a href="#tag-users" class="sidebar-link" onclick="closeMobile()">Users <span class="link-badge get">1</span></a>
-  <a href="#tag-annotations" class="sidebar-link" onclick="closeMobile()">Annotations <span class="link-badge get">1</span></a>
-  <a href="#tag-annotation-statistics" class="sidebar-link" onclick="closeMobile()">Annotation Statistics <span class="link-badge get">1</span></a>
-  <a href="#tag-uploads" class="sidebar-link" onclick="closeMobile()">Uploads <span class="link-badge post">1</span></a>
+  <a href="#tag-annotations" class="sidebar-link" onclick="closeMobile()">Annotations <span class="link-badge mixed">3</span></a>
+  <a href="#tag-annotation-statistics" class="sidebar-link" onclick="closeMobile()">Annotation Statistics <span class="link-badge get">3</span></a>
+  <a href="#tag-uploads" class="sidebar-link" onclick="closeMobile()">Uploads <span class="link-badge post">2</span></a>
   <a href="#tag-multipart-uploads" class="sidebar-link" onclick="closeMobile()">Multipart Uploads <span class="link-badge post">1</span></a>
   <a href="#tag-programs" class="sidebar-link" onclick="closeMobile()">Programs <span class="link-badge get">1</span></a>
-  <a href="#tag-scheduled-games" class="sidebar-link" onclick="closeMobile()">Scheduled Games <span class="link-badge mixed">5</span></a>
+  <a href="#tag-scheduled-games" class="sidebar-link" onclick="closeMobile()">Scheduled Games <span class="link-badge mixed">6</span></a>
   <a href="#tag-devices" class="sidebar-link" onclick="closeMobile()">Devices <span class="link-badge mixed">5</span></a>
   <a href="#tag-team-players" class="sidebar-link" onclick="closeMobile()">Team Players <span class="link-badge mixed">3</span></a>
-  <a href="#tag-teams" class="sidebar-link" onclick="closeMobile()">Teams <span class="link-badge mixed">2</span></a>
+  <a href="#tag-teams" class="sidebar-link" onclick="closeMobile()">Teams <span class="link-badge mixed">3</span></a>
   <a href="#tag-scheduled-game-team-assignment" class="sidebar-link" onclick="closeMobile()">Scheduled Game Team Assignment <span class="link-badge post">1</span></a>
+  <a href="#tag-scheduled-game-source-media" class="sidebar-link" onclick="closeMobile()">Scheduled Game Source Media <span class="link-badge post">1</span></a>
 
 </div>
 </nav>
@@ -838,6 +839,19 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 </div>
 
 <!-- 7.1 Basic Game Info -->
+<div class="scenario-step">
+<div class="scenario-step-header">
+  <span class="step-number">2</span>
+  <h4>Poll for Newly Approved Games (All Programs)</h4>
+</div>
+<p>To sync finished games across every program you can see, use <code>/scheduled-games/list/all</code> instead of walking each division. Filter <code>status=final-approved</code> and set <code>statusUpdatedAfter</code> to the time of your last sync (ISO-8601 or Unix seconds). Results are newest first; <code>limit</code> is clamped to 50, page with <code>start</code>.</p>
+<div class="code-block">
+<div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code>curl -X GET "https://api.sportsvisio-api.com/scheduled-games/list/all?status=final-approved&statusUpdatedAfter=2026-11-01T00:00:00Z&limit=50&start=0" \
+  -H "Authorization: Bearer YOUR_TOKEN"</code></pre>
+</div>
+</div>
+
 <h3 id="step-game-info" style="margin-top: 24px;">Getting Basic Game Information</h3>
 <p>Retrieve game metadata, teams, rosters, and associated video recordings at any point in the workflow.</p>
 
@@ -1191,7 +1205,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <div class="tag-group" id="tag-users">
 <div class="tag-group-header"><h3>Users</h3><span class="tag-count">1 endpoint</span></div>
 
-<div class="endpoint-card" id="get-users-userId" data-search="get users userid get user returns user record of the currently authenticated user, unless optional userid specified. userid authorization">
+<div class="endpoint-card" id="get-users-userId" data-search="get users userid user returns a record by default the caller s own authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/users/{userId}</span>
@@ -1200,7 +1214,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Returns User record of the currently authenticated user, unless optional userId specified.</p>
+<div class="endpoint-desc"><p>Returns a user record — by default the caller&#x27;s own.</p><p><strong>How it works</strong></p><ul><li>Omit <code>userId</code> to get the authenticated user. You can only read another user&#x27;s record if you are that user (or a SportsVisio admin).</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">userId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Optional String guid of user. If omitted, user record for authenticated user is returned</td></tr>
@@ -1417,9 +1431,9 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 
 <!-- Annotations -->
 <div class="tag-group" id="tag-annotations">
-<div class="tag-group-header"><h3>Annotations</h3><span class="tag-count">1 endpoint</span></div>
+<div class="tag-group-header"><h3>Annotations</h3><span class="tag-count">3 endpoints</span></div>
 
-<div class="endpoint-card" id="get-annotations-game-feed-scheduledGameId" data-search="get annotations game feed scheduledgameid clips actions roster players profiles complete feed final-approved game video highlights authorization">
+<div class="endpoint-card" id="get-annotations-game-feed-scheduledGameId" data-search="get annotations game-feed scheduledgameid the complete feed for a final-approved game whole in one call both teams with their rosters and player profiles then every approved action play-by-play ordered by position video authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/annotations/game-feed/{scheduledGameId}</span>
@@ -1428,18 +1442,18 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">The whole game in one call: both teams with their rosters and player profiles, then every approved action referencing them by <code>teamId</code> / <code>playerId</code>. Actions are returned whether or not a clip has been rendered &mdash; <code>clipUrl</code> is <code>null</code> until one lands. Ordered by position in the game video (<code>videoTimecode</code>). Returns <code>409</code> until the game reaches final-approved, which is the point its action list stops moving.</p>
+<div class="endpoint-desc"><p>The whole game in one call: both teams with their rosters and player profiles, then every approved action (play-by-play), ordered by position in the game video.</p><p><strong>How it works</strong></p><ul><li>Only available once the game is <code>final-approved</code> — the point at which the action list stops changing. Earlier calls return <code>409</code>.</li><li>Actions reference players and teams by <code>playerId</code> / <code>teamId</code>, so join them against the rosters in the same response.</li><li>Every action is returned whether or not its clip has been rendered; <code>clipUrl</code> is <code>null</code> until one exists (see <code>GET /annotations/actions/generate-clip/:gameId?/:actionId</code>).</li><li>Responses are cached; a newly rendered clip appears on the next fetch after it lands.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-gfeed1a2b', 'opt-gfeed3c4d')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-gfeed3c4d', 'req-gfeed1a2b')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-annotations-game-feed-scheduledGameId', 'opt-get-annotations-game-feed-scheduledGameId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-annotations-game-feed-scheduledGameId', 'req-get-annotations-game-feed-scheduledGameId')">Optional</button>
 </div>
-<div id="req-gfeed1a2b" class="param-tab-content active">
+<div id="req-get-annotations-game-feed-scheduledGameId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Scheduled game UUID</td></tr>
 </tbody></table>
 </div>
-<div id="opt-gfeed3c4d" class="param-tab-content">
+<div id="opt-get-annotations-game-feed-scheduledGameId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
@@ -1581,13 +1595,164 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 </div>
 </div></div>
 
+<div class="endpoint-card" id="get-annotations-actions-generate-clip-gameId-actionId" data-search="get annotations actions generate-clip gameid actionid generate and save video clip from annotated action or check task status renders a short around one e g made shot reports progress on render already started force negativeoffsetseconds cliplengthseconds authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge get">GET</span>
+<span class="endpoint-path">/annotations/actions/generate-clip/{gameId}/{actionId}</span>
+<span class="endpoint-summary">Generate and save video clip from annotated action, or check task status</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('get-annotations-actions-generate-clip-gameId-actionId')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Renders a short video clip around one annotated action (e.g. a made shot), or reports progress on a render already started.</p><p><strong>How it works</strong></p><ol><li>Call once to start the render.</li><li>Poll the same URL: while it is processing the response carries <code>state</code> and <code>retrySeconds</code> — wait that long before the next call.</li><li>When finished, <code>clipUrl</code> and <code>clipThumbUrl</code> are set. Later calls return the saved clip immediately.</li></ol><p><strong>Options</strong></p><ul><li><code>negativeOffsetSeconds</code> (2–5, default 2): how far before the action the clip starts.</li><li><code>clipLengthSeconds</code> (4–10, default 4): clip length.</li><li><code>force=true</code>: re-render an existing clip.</li></ul><p><code>gameId</code> is optional; the action identifies the game.</p></div>
+<h4>Parameters</h4>
+<div class="param-tabs">
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-annotations-actions-generate-clip-gameId-actionId', 'opt-get-annotations-actions-generate-clip-gameId-actionId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-annotations-actions-generate-clip-gameId-actionId', 'req-get-annotations-actions-generate-clip-gameId-actionId')">Optional</button>
+</div>
+<div id="req-get-annotations-actions-generate-clip-gameId-actionId" class="param-tab-content active">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">actionId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>AnnotationAction uuid</td></tr>
+<tr><td><span class="param-name">gameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>gameId</td></tr>
+</tbody></table>
+</div>
+<div id="opt-get-annotations-actions-generate-clip-gameId-actionId" class="param-tab-content">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">force</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Allows regeneration of existing clip when set to true</td></tr>
+<tr><td><span class="param-name">negativeOffsetSeconds</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Number of seconds *before* action timestamp to start clip generation</td></tr>
+<tr><td><span class="param-name">clipLengthSeconds</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Action clip length in seconds *after* negative offset</td></tr>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+</div>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 Success</span></div>
+<div class="response-body response-body-collapsed" id="get-annotations-actions-generate-clip-gameId-actionId-response-200" data-lines="26">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('get-annotations-actions-generate-clip-gameId-actionId-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">{
+  &quot;clipUrl&quot;: &quot;string&quot;,
+  &quot;clipThumbUrl&quot;: &quot;string&quot;,
+  &quot;fireballUrl&quot;: &quot;string&quot;,
+  &quot;percentComplete&quot;: 0,
+  &quot;state&quot;: &quot;SUBMITTED&quot;,
+  &quot;retrySeconds&quot;: 0,
+  &quot;duplicate&quot;: true,
+  &quot;aiStatus&quot;: {
+    &quot;status&quot;: &quot;starting&quot;,
+    &quot;percent&quot;: 0,
+    &quot;errors&quot;: [
+      {
+        &quot;occurredAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;severity&quot;: &quot;warn | critical&quot;,
+        &quot;message&quot;: &quot;string&quot;,
+        &quot;code&quot;: &quot;string&quot;
+      }
+    ]
+  },
+  &quot;aiWorkerExternal&quot;: {
+    &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+  }
+}</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X GET &quot;https://api.sportsvisio-api.com/annotations/actions/generate-clip/{gameId}/{actionId}&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
+</div></div>
+
+<div class="endpoint-card" id="post-annotations-game-condensed-scheduledGameId" data-search="post annotations game-condensed scheduledgameid generate or re-generate the condensed game video starts a render of full with dead time cut out volleyball only force authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge post">POST</span>
+<span class="endpoint-path">/annotations/game-condensed/{scheduledGameId}</span>
+<span class="endpoint-summary">Generate (or re-generate) the condensed game video</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('post-annotations-game-condensed-scheduledGameId')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Starts a render of the condensed game video — the full game with dead time cut out. <strong>Volleyball only.</strong></p><p><strong>How it works</strong></p><ul><li>The game must be <code>final-approved</code> and played normally (not forfeited or otherwise irregular), otherwise <code>409</code>.</li><li>Returns immediately; the render runs in the background. Poll the game (<code>GET /scheduled-games/:scheduledGameId</code>) and watch <code>condensedStatus</code>: <code>condensed-pending</code> → <code>condensed-ready</code> (the video URL is in <code>condensed.url</code>) or <code>condensed-failed</code>.</li><li><code>force=true</code> re-renders a game that already has a condensed video (its version increases).</li></ul></div>
+<h4>Parameters</h4>
+<div class="param-tabs">
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-annotations-game-condensed-scheduledGameId', 'opt-post-annotations-game-condensed-scheduledGameId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-annotations-game-condensed-scheduledGameId', 'req-post-annotations-game-condensed-scheduledGameId')">Optional</button>
+</div>
+<div id="req-post-annotations-game-condensed-scheduledGameId" class="param-tab-content active">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td></td></tr>
+<tr><td><span class="param-name">force</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td></td></tr>
+</tbody></table>
+</div>
+<div id="opt-post-annotations-game-condensed-scheduledGameId" class="param-tab-content">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+</div>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 Success</span><span class="response-code success">201 </span></div>
+<div class="response-body response-body-collapsed" id="post-annotations-game-condensed-scheduledGameId-response-200" data-lines="26">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('post-annotations-game-condensed-scheduledGameId-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">{
+  &quot;clipUrl&quot;: &quot;string&quot;,
+  &quot;clipThumbUrl&quot;: &quot;string&quot;,
+  &quot;fireballUrl&quot;: &quot;string&quot;,
+  &quot;percentComplete&quot;: 0,
+  &quot;state&quot;: &quot;SUBMITTED&quot;,
+  &quot;retrySeconds&quot;: 0,
+  &quot;duplicate&quot;: true,
+  &quot;aiStatus&quot;: {
+    &quot;status&quot;: &quot;starting&quot;,
+    &quot;percent&quot;: 0,
+    &quot;errors&quot;: [
+      {
+        &quot;occurredAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;severity&quot;: &quot;warn | critical&quot;,
+        &quot;message&quot;: &quot;string&quot;,
+        &quot;code&quot;: &quot;string&quot;
+      }
+    ]
+  },
+  &quot;aiWorkerExternal&quot;: {
+    &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+  }
+}</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/annotations/game-condensed/{scheduledGameId}&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{}&#x27;</code></pre></div>
+</div></div>
+
 </div>
 
 <!-- Annotation Statistics -->
 <div class="tag-group" id="tag-annotation-statistics">
-<div class="tag-group-header"><h3>Annotation Statistics</h3><span class="tag-count">1 endpoint</span></div>
+<div class="tag-group-header"><h3>Annotation Statistics</h3><span class="tag-count">3 endpoints</span></div>
 
-<div class="endpoint-card" id="get-annotations-stats-game-player-rollup-scheduledGameId" data-search="get annotations stats game player rollup scheduledgameid rollup stats for each player in the specified game uuid scheduledgameid authorization">
+<div class="endpoint-card" id="get-annotations-stats-game-player-rollup-scheduledGameId" data-search="get annotations stats game-player-rollup scheduledgameid rollup for each player in the specified game uuid box score one stat line per grouped by team withshotchartdata includeunassigned authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/annotations/stats/game-player-rollup/{scheduledGameId}</span>
@@ -1596,19 +1761,21 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc"></p>
+<div class="endpoint-desc"><p>Box score for one game: one stat line per player, grouped by team.</p><p><strong>How it works</strong></p><ul><li>Shot-chart data is left out by default; add <code>withShotChartData=true</code> to include it (only for sports with shot charts).</li><li>Stat lines not yet matched to a player are left out; add <code>includeUnassigned=true</code> to include them.</li><li>Stats can still change until the game is <code>final-approved</code>. Responses are cached.</li><li>Rate-limited to 30 requests per 10 seconds.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-o1f6l1wot', 'opt-26nhlphxa')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-26nhlphxa', 'req-o1f6l1wot')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-annotations-stats-game-player-rollup-scheduledGameId', 'opt-get-annotations-stats-game-player-rollup-scheduledGameId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-annotations-stats-game-player-rollup-scheduledGameId', 'req-get-annotations-stats-game-player-rollup-scheduledGameId')">Optional</button>
 </div>
-<div id="req-o1f6l1wot" class="param-tab-content active">
+<div id="req-get-annotations-stats-game-player-rollup-scheduledGameId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Scheduled Game uuid to fetch</td></tr>
 </tbody></table>
 </div>
-<div id="opt-26nhlphxa" class="param-tab-content">
+<div id="opt-get-annotations-stats-game-player-rollup-scheduledGameId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">withShotChartData</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Include shot chart data in response. Default: false</td></tr>
+<tr><td><span class="param-name">includeUnassigned</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Include stat lines whose roster row resolves to no person (unassigned &quot;#N&quot; rows — SPO-239 FE7). Omitted by default so deployed clients that dereference stat.player keep working.</td></tr>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
@@ -4215,13 +4382,169 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
+<div class="endpoint-card" id="get-annotations-stats-scheduled-game-scheduledGameId-details" data-search="get annotations stats scheduled-game scheduledgameid details game rollups per interval for specified uuid team broken down set volleyball only authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge get">GET</span>
+<span class="endpoint-path">/annotations/stats/scheduled-game/{scheduledGameId}/details</span>
+<span class="endpoint-summary">Get game stats rollups per game interval for specified uuid</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('get-annotations-stats-scheduled-game-scheduledGameId-details')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Team stats broken down per set. <strong>Volleyball only.</strong></p><p><strong>How it works</strong></p><ul><li>Returns one stat rollup per set.</li><li>The game must be volleyball and <code>final-approved</code>; otherwise <code>400</code>.</li><li>Rate-limited to 30 requests per 10 seconds.</li></ul></div>
+<h4>Parameters</h4>
+<div class="param-tabs">
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-annotations-stats-scheduled-game-scheduledGameId-details', 'opt-get-annotations-stats-scheduled-game-scheduledGameId-details')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-annotations-stats-scheduled-game-scheduledGameId-details', 'req-get-annotations-stats-scheduled-game-scheduledGameId-details')">Optional</button>
+</div>
+<div id="req-get-annotations-stats-scheduled-game-scheduledGameId-details" class="param-tab-content active">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td></td></tr>
+</tbody></table>
+</div>
+<div id="opt-get-annotations-stats-scheduled-game-scheduledGameId-details" class="param-tab-content">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+</div>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 Success</span><span class="response-code error">400 The game is not volleyball, or is not final approved.</span></div>
+<div class="response-body response-body-collapsed" id="get-annotations-stats-scheduled-game-scheduledGameId-details-response-200" data-lines="37">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('get-annotations-stats-scheduled-game-scheduledGameId-details-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">{
+  &quot;sets&quot;: [
+    {
+      &quot;set&quot;: &quot;string&quot;,
+      &quot;teams&quot;: [
+        {
+          &quot;teamAssn&quot;: {
+            &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+            &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+            &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+          },
+          &quot;playerSummary&quot;: [
+            {}
+          ],
+          &quot;points&quot;: 0
+        }
+      ]
+    }
+  ],
+  &quot;ranks&quot;: [
+    {
+      &quot;teamPlayer&quot;: {
+        &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;,
+        &quot;isPhantom&quot;: true,
+        &quot;email&quot;: &quot;string&quot;,
+        &quot;invitation&quot;: {
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;sentAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+          &quot;expiresAt&quot;: &quot;2026-01-15T10:00:00Z&quot;
+        }
+      },
+      &quot;impact&quot;: 0
+    }
+  ]
+}</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X GET &quot;https://api.sportsvisio-api.com/annotations/stats/scheduled-game/{scheduledGameId}/details&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
+</div></div>
+
+<div class="endpoint-card" id="get-annotations-stats-players-by-division-programId-eventId-divisionId" data-search="get annotations stats players-by-division programid eventid divisionid player by program-event-division season for every in a division program aggregated across their games withshotchartdata teamid authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge get">GET</span>
+<span class="endpoint-path">/annotations/stats/players-by-division/{programId}/{eventId}/{divisionId}</span>
+<span class="endpoint-summary">Player stats by program-event-division</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('get-annotations-stats-players-by-division-programId-eventId-divisionId')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Season stats for every player in a division (program → season → division), aggregated across their games.</p><p><strong>How it works</strong></p><ul><li>Add <code>teamId</code> to return only one team&#x27;s players.</li><li>Shot-chart data is left out by default; add <code>withShotChartData=true</code> to include it (only for sports with shot charts).</li><li>Responses are cached; stats update shortly after a game is approved.</li><li>Rate-limited to 30 requests per 10 seconds.</li></ul></div>
+<h4>Parameters</h4>
+<div class="param-tabs">
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-annotations-stats-players-by-division-programId-eventId-divisionId', 'opt-get-annotations-stats-players-by-division-programId-eventId-divisionId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-annotations-stats-players-by-division-programId-eventId-divisionId', 'req-get-annotations-stats-players-by-division-programId-eventId-divisionId')">Optional</button>
+</div>
+<div id="req-get-annotations-stats-players-by-division-programId-eventId-divisionId" class="param-tab-content active">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">programId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Program</td></tr>
+<tr><td><span class="param-name">eventId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Event</td></tr>
+<tr><td><span class="param-name">divisionId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Division</td></tr>
+</tbody></table>
+</div>
+<div id="opt-get-annotations-stats-players-by-division-programId-eventId-divisionId" class="param-tab-content">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">withShotChartData</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Include shot chart data in response. Default: false</td></tr>
+<tr><td><span class="param-name">teamId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Optional; only return players belonging to this team</td></tr>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+</div>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 Success</span></div>
+<div class="response-body response-body-collapsed" id="get-annotations-stats-players-by-division-programId-eventId-divisionId-response-200" data-lines="23">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('get-annotations-stats-players-by-division-programId-eventId-divisionId-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">[
+  {
+    &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;,
+    &quot;stale&quot;: true,
+    &quot;sportId&quot;: &quot;string&quot;,
+    &quot;player&quot;: {
+      &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+      &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+      &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;,
+      &quot;isPhantom&quot;: true,
+      &quot;email&quot;: &quot;string&quot;,
+      &quot;invitation&quot;: {
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;sentAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;expiresAt&quot;: &quot;2026-01-15T10:00:00Z&quot;
+      }
+    },
+    &quot;seasonCount&quot;: 0,
+    &quot;teamCount&quot;: 0
+  }
+]</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X GET &quot;https://api.sportsvisio-api.com/annotations/stats/players-by-division/{programId}/{eventId}/{divisionId}&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
+</div></div>
+
 </div>
 
 <!-- Uploads -->
 <div class="tag-group" id="tag-uploads">
-<div class="tag-group-header"><h3>Uploads</h3><span class="tag-count">1 endpoint</span></div>
+<div class="tag-group-header"><h3>Uploads</h3><span class="tag-count">2 endpoints</span></div>
 
-<div class="endpoint-card" id="post-upload" data-search="post upload upload image to cdn uploads an image to filestack cdn and returns a storeable filestack url for image. authorization">
+<div class="endpoint-card" id="post-upload" data-search="post upload image to cdn uploads an e g a team logo or player photo the sportsvisio and returns url you can store on record authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/upload</span>
@@ -4230,11 +4553,20 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Uploads an image to FileStack CDN and returns a storeable filestack URL for image.</p>
+<div class="endpoint-desc"><p>Uploads an image (e.g. a team logo or player photo) to the SportsVisio CDN and returns a URL you can store on a record.</p><p><strong>How it works</strong></p><ul><li>Send <code>multipart/form-data</code> with the image in the <code>file</code> field and a <code>prefix</code> (<code>team</code> or <code>profile</code>) that groups the upload.</li><li>Returns the CDN URL as a string.</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">prefix</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>String prefix of file being created, for organizational purposes</td></tr>
+<tr><td><span class="param-name">file</span></td><td><span class="param-in">required</span></td><td><span class="param-type">Multi-part Binary</span></td><td>Multi-part file to upload</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;prefix&quot;: &quot;profile&quot;,
+  &quot;file&quot;: null
+}</code></pre></div>
 
 <h4>Responses</h4>
 <div class="response-codes"><span class="response-code success">201 </span></div>
@@ -4243,7 +4575,62 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/upload&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;prefix&quot;: &quot;profile&quot;,
+  &quot;file&quot;: null
+}'</code></pre></div>
+</div></div>
+
+<div class="endpoint-card" id="post-upload-validate-url" data-search="post upload validate-url validate video url checks that a points to reachable is safe download and process run it before submitting by authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge post">POST</span>
+<span class="endpoint-path">/upload/validate-url</span>
+<span class="endpoint-summary">Validate Video URL</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('post-upload-validate-url')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Checks that a URL points to a reachable video that is safe to download and process — run it before submitting a video by URL.</p><p><strong>How it works</strong></p><ul><li>Returns whether the URL is usable and, when the remote server reports them, the content type and size.</li></ul></div>
+<h4>Parameters</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">url</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>URL to check for a downloadable video file</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;url&quot;: &quot;string&quot;
+}</code></pre></div>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">201 </span></div>
+<div class="response-body" id="post-upload-validate-url-response-201" data-lines="6">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (201)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('post-upload-validate-url-response-201', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">{
+  &quot;valid&quot;: true,
+  &quot;contentType&quot;: &quot;string&quot;,
+  &quot;contentLength&quot;: 0,
+  &quot;reason&quot;: &quot;string&quot;
+}</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/upload/validate-url&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+  &quot;url&quot;: &quot;string&quot;
+}&#x27;</code></pre></div>
 </div></div>
 
 </div>
@@ -4252,7 +4639,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <div class="tag-group" id="tag-multipart-uploads">
 <div class="tag-group-header"><h3>Multipart Uploads</h3><span class="tag-count">1 endpoint</span></div>
 
-<div class="endpoint-card" id="post-upload-multipart-uploadId-complete" data-search="post upload multipart uploadid complete complete multipart upload completes the multipart upload and returns the final file url. optionally validates sha256 checksum. authorization uploadid">
+<div class="endpoint-card" id="post-upload-multipart-uploadId-complete" data-search="post upload multipart uploadid complete finishes a after every part has been uploaded final step of the recording flow authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/upload/multipart/{uploadId}/complete</span>
@@ -4261,25 +4648,25 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Completes the multipart upload and returns the final file URL. Optionally validates SHA256 checksum.</p>
+<div class="endpoint-desc"><p>Finishes a multipart upload after every part has been uploaded. <strong>Final step of the recording/upload flow.</strong></p><p><strong>How it works</strong></p><ul><li><code>uploadId</code> comes from <code>POST /devices/init-upload-multipart/:scheduledGameId/:deviceId</code>.</li><li>Joins the parts into the final file and returns its <code>url</code>.</li><li><code>400</code> if any part is missing or the total size does not match <code>fileSize</code>; <code>404</code> if the session has expired (start a new one).</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-o30ijtiiv', 'opt-tq1l7gpjx')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-tq1l7gpjx', 'req-o30ijtiiv')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-upload-multipart-uploadId-complete', 'opt-post-upload-multipart-uploadId-complete')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-upload-multipart-uploadId-complete', 'req-post-upload-multipart-uploadId-complete')">Optional</button>
 </div>
-<div id="req-o30ijtiiv" class="param-tab-content active">
+<div id="req-post-upload-multipart-uploadId-complete" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">uploadId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Multipart upload ID</td></tr>
 </tbody></table>
 </div>
-<div id="opt-tq1l7gpjx" class="param-tab-content">
+<div id="opt-post-upload-multipart-uploadId-complete" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Multipart upload completed successfully</span></div>
+<div class="response-codes"><span class="response-code success">200 Multipart upload completed successfully</span><span class="response-code success">201 </span></div>
 
 <div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/upload/multipart/{uploadId}/complete&quot; \
@@ -4294,7 +4681,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <div class="tag-group" id="tag-programs">
 <div class="tag-group-header"><h3>Programs</h3><span class="tag-count">1 endpoint</span></div>
 
-<div class="endpoint-card" id="get-programs-list-accountId" data-search="get programs list accountid get paginated list of programs returns the programs of the specified accountid or currently authenticated user accountid column direction limit start sportid search programtype assigned havinggames private isapiclient includepeds authorization">
+<div class="endpoint-card" id="get-programs-list-accountId" data-search="get programs list accountid paginated of lists the leagues clubs tournaments visible to caller usual starting point for walking program season event division hierarchy column direction limit start sportid search programtype assigned havinggames private isapiclient includepeds authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/programs/list/{accountId}</span>
@@ -4303,13 +4690,13 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Returns the Programs of the specified accountId or currently authenticated user</p>
+<div class="endpoint-desc"><p>Lists the programs (leagues, clubs, tournaments) visible to the caller — the usual starting point for walking the program → season (event) → division hierarchy.</p><p><strong>How it works</strong></p><ul><li>Without <code>accountId</code>, returns the authenticated account&#x27;s programs. By default only programs you are directly assigned to (<code>assigned=true</code>).</li><li>Filter with <code>search</code> (name or id), <code>sportId</code>, <code>programType</code>, <code>havingGames</code> and <code>private</code>.</li><li>Set <code>includePeds=true</code> to embed each program&#x27;s seasons and divisions, so you can address division-scoped routes (<code>/:programId/:eventId/:divisionId</code>) without further calls.</li><li>Paginated: <code>limit</code> (default 25, max 50) and <code>start</code> (offset). Sort with <code>column</code> and <code>direction</code> (<code>ASC</code> / <code>DESC</code>).</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">accountId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Optional String guid of account. If omitted, account record for authenticated user is used</td></tr>
 <tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
 <tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
-<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
 <tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
 <tr><td><span class="param-name">sportId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by sport id</td></tr>
 <tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by program name or id</td></tr>
@@ -4402,9 +4789,9 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 
 <!-- Scheduled Games -->
 <div class="tag-group" id="tag-scheduled-games">
-<div class="tag-group-header"><h3>Scheduled Games</h3><span class="tag-count">5 endpoints</span></div>
+<div class="tag-group-header"><h3>Scheduled Games</h3><span class="tag-count">6 endpoints</span></div>
 
-<div class="endpoint-card" id="post-programs-divisions-teams-programId-eventId-divisionId-bulk" data-search="post programs divisions teams programid eventid divisionid bulk add teams to division creates multiple division team assignment records programid eventid divisionid authorization">
+<div class="endpoint-card" id="post-programs-divisions-teams-programId-eventId-divisionId-bulk" data-search="post programs divisions teams programid eventid divisionid bulk add to division adds existing a in one call authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/programs/divisions/teams/{programId}/{eventId}/{divisionId}/bulk</span>
@@ -4413,27 +4800,34 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Creates multiple division team assignment records</p>
+<div class="endpoint-desc"><p>Adds existing teams to a division in one call.</p><p><strong>How it works</strong></p><ul><li>Body: <code>teamIds</code> — the uuids of teams to add (create them first with <code>POST /teams/:programId/:eventId/:divisionId</code> if needed).</li><li>A team must be in the division before its players can be rostered or it can be scheduled into a game there.</li><li>Returns <code>true</code> on success; <code>404</code> if the division does not exist.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-zmy8movyd', 'opt-rjds499fq')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-rjds499fq', 'req-zmy8movyd')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-programs-divisions-teams-programId-eventId-divisionId-bulk', 'opt-post-programs-divisions-teams-programId-eventId-divisionId-bulk')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-programs-divisions-teams-programId-eventId-divisionId-bulk', 'req-post-programs-divisions-teams-programId-eventId-divisionId-bulk')">Optional</button>
 </div>
-<div id="req-zmy8movyd" class="param-tab-content active">
+<div id="req-post-programs-divisions-teams-programId-eventId-divisionId-bulk" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">programId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Program</td></tr>
 <tr><td><span class="param-name">eventId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Event</td></tr>
 <tr><td><span class="param-name">divisionId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Division</td></tr>
 </tbody></table>
 </div>
-<div id="opt-rjds499fq" class="param-tab-content">
+<div id="opt-post-programs-divisions-teams-programId-eventId-divisionId-bulk" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">teamId</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Uuid of Team to add</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;teamId&quot;: &quot;string&quot;
+}</code></pre></div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Success.</span></div>
+<div class="response-codes"><span class="response-code success">200 Success.</span><span class="response-code success">201 </span><span class="response-code error">404 Division not found.</span></div>
 <div class="response-body" id="post-programs-divisions-teams-programId-eventId-divisionId-bulk-response-200" data-lines="1">
 <div class="response-body-header" onclick="toggleResponseBody(this)">
 <span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
@@ -4454,10 +4848,12 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/programs/divisions/teams/{programId}/{eventId}/{divisionId}/bulk&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;teamId&quot;: &quot;string&quot;
+}'</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="get-programs-divisions-games-list-programId-eventId-divisionId" data-search="get programs divisions games list programid eventid divisionid get a list of scheduled games returns a list of scheduledgame records for the specified ped column direction limit start sportid search status before after teamids teamid isapiclient programid eventid divisionid column direction limit start sportid search status before after teamids teamid isapiclient authorization">
+<div class="endpoint-card" id="get-programs-divisions-games-list-programId-eventId-divisionId" data-search="get programs divisions games list programid eventid divisionid a of scheduled lists the in one division program season column direction limit start sportid search status before after statusupdatedbefore statusupdatedafter teamids teamid isapiclient processingmode authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/programs/divisions/games/list/{programId}/{eventId}/{divisionId}</span>
@@ -4466,45 +4862,51 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Returns a list of ScheduledGame records for the specified PED</p>
+<div class="endpoint-desc"><p>Lists the scheduled games in one division (program → season → division).</p><p><strong>How it works</strong></p><ul><li>Filter by <code>status</code>, <code>teamId</code> (games involving that team), <code>teamIds</code> (games involving any of them), <code>before</code> / <code>after</code> (Unix timestamps) and <code>search</code>.</li><li>Each game includes its teams and arena.</li><li>Paginated: <code>limit</code> (default 25, max 50) and <code>start</code> (offset). Sort with <code>column</code> and <code>direction</code> (<code>ASC</code> / <code>DESC</code>).</li><li>Responses are cached briefly; a change can take a moment to appear.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-f03cxobfo', 'opt-ys80a6apt')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-ys80a6apt', 'req-f03cxobfo')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-programs-divisions-games-list-programId-eventId-divisionId', 'opt-get-programs-divisions-games-list-programId-eventId-divisionId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-programs-divisions-games-list-programId-eventId-divisionId', 'req-get-programs-divisions-games-list-programId-eventId-divisionId')">Optional</button>
 </div>
-<div id="req-f03cxobfo" class="param-tab-content active">
+<div id="req-get-programs-divisions-games-list-programId-eventId-divisionId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">programId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Program</td></tr>
 <tr><td><span class="param-name">eventId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Event</td></tr>
 <tr><td><span class="param-name">divisionId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Division</td></tr>
 </tbody></table>
 </div>
-<div id="opt-ys80a6apt" class="param-tab-content">
+<div id="opt-get-programs-divisions-games-list-programId-eventId-divisionId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
 <tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
-<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
 <tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
 <tr><td><span class="param-name">sportId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by sport id</td></tr>
 <tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by owner email, game description, arena / court location, or season.</td></tr>
 <tr><td><span class="param-name">status</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>Optional; Filter by game status</td></tr>
 <tr><td><span class="param-name">before</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Optional; return results up to and including the specified Unix timestamp</td></tr>
 <tr><td><span class="param-name">after</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Optional; return results after and including the specified Unix timestamp</td></tr>
+<tr><td><span class="param-name">statusUpdatedBefore</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Optional; return games whose status last changed at or before this instant. Accepts an ISO-8601 date string or a Unix timestamp in seconds.</td></tr>
+<tr><td><span class="param-name">statusUpdatedAfter</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Optional; return games whose status last changed at or after this instant. Accepts an ISO-8601 date string or a Unix timestamp in seconds.</td></tr>
 <tr><td><span class="param-name">teamIds</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>Array of Team uuids to limit search results</td></tr>
-<tr><td><span class="param-name">teamId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>The id of the team to filter the results. This is different from `teamIds` that performs an OR search in the array of teamIds.</td></tr>
+<tr><td><span class="param-name">teamId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>The id of the team to filter the results. This is different from <code>teamIds</code> that performs an OR search in the array of teamIds.</td></tr>
 <tr><td><span class="param-name">isApiClient</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>When true returns games that are flagged as clients of the API</td></tr>
+<tr><td><span class="param-name">processingMode</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Only games with this processingMode. Omitted, lists show annotated games only</td></tr>
 <tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
 <tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
-<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
 <tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
 <tr><td><span class="param-name">sportId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by sport id</td></tr>
 <tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by owner email, game description, arena / court location, or season.</td></tr>
 <tr><td><span class="param-name">status</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>Optional; Filter by game status</td></tr>
 <tr><td><span class="param-name">before</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Optional; return results up to and including the specified Unix timestamp</td></tr>
 <tr><td><span class="param-name">after</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Optional; return results after and including the specified Unix timestamp</td></tr>
+<tr><td><span class="param-name">statusUpdatedBefore</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Optional; return games whose status last changed at or before this instant. Accepts an ISO-8601 date string or a Unix timestamp in seconds.</td></tr>
+<tr><td><span class="param-name">statusUpdatedAfter</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Optional; return games whose status last changed at or after this instant. Accepts an ISO-8601 date string or a Unix timestamp in seconds.</td></tr>
 <tr><td><span class="param-name">teamIds</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>Array of Team uuids to limit search results</td></tr>
-<tr><td><span class="param-name">teamId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>The id of the team to filter the results. This is different from `teamIds` that performs an OR search in the array of teamIds.</td></tr>
+<tr><td><span class="param-name">teamId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>The id of the team to filter the results. This is different from <code>teamIds</code> that performs an OR search in the array of teamIds.</td></tr>
 <tr><td><span class="param-name">isApiClient</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>When true returns games that are flagged as clients of the API</td></tr>
+<tr><td><span class="param-name">processingMode</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Only games with this processingMode. Omitted, lists show annotated games only</td></tr>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
@@ -4596,7 +4998,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="get-scheduled-games-scheduledGameId" data-search="get scheduled games scheduledgameid get scheduledgame returns full scheduledgame record. scheduledgameid authorization">
+<div class="endpoint-card" id="get-scheduled-games-scheduledGameId" data-search="get scheduled-games scheduledgameid scheduledgame returns one game in full teams scores rosters status events and attached recording devices includeunassigned authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/scheduled-games/{scheduledGameId}</span>
@@ -4605,19 +5007,20 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Returns full ScheduledGame record.</p>
+<div class="endpoint-desc"><p>Returns one game in full: teams, scores, game rosters, status, events and attached recording devices.</p><p><strong>How it works</strong></p><ul><li><code>scheduledGameId</code> must be a uuid (<code>400</code> otherwise).</li><li>Roster lines not yet matched to a player are left out; pass <code>includeUnassigned=true</code> to include them.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-i3q6vdh1p', 'opt-98ra1kx96')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-98ra1kx96', 'req-i3q6vdh1p')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-scheduled-games-scheduledGameId', 'opt-get-scheduled-games-scheduledGameId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-scheduled-games-scheduledGameId', 'req-get-scheduled-games-scheduledGameId')">Optional</button>
 </div>
-<div id="req-i3q6vdh1p" class="param-tab-content active">
+<div id="req-get-scheduled-games-scheduledGameId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Scheduled Game uuid to fetch</td></tr>
 </tbody></table>
 </div>
-<div id="opt-98ra1kx96" class="param-tab-content">
+<div id="opt-get-scheduled-games-scheduledGameId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">includeUnassigned</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Include game-roster lines that resolve to no person (unassigned &quot;#N&quot; rows — SPO-239 FE7). Omitted by default so deployed clients that dereference roster.teamPlayer keep working.</td></tr>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
@@ -7973,7 +8376,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="post-scheduled-games-programId-eventId-divisionId" data-search="post scheduled games programid eventid divisionid create scheduledgame creates a scheduledgame record. programid eventid divisionid authorization">
+<div class="endpoint-card" id="post-scheduled-games-programId-eventId-divisionId" data-search="post scheduled-games programid eventid divisionid create scheduledgame schedules a new game in division authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/scheduled-games/{programId}/{eventId}/{divisionId}</span>
@@ -7982,27 +8385,77 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Creates a ScheduledGame record.</p>
+<div class="endpoint-desc"><p>Schedules a new game in a division.</p><p><strong>How it works</strong></p><ul><li>Both teams must already be in the division.</li><li>The game starts in <code>pending-device-setup</code>; attach a recording device next (<code>POST /devices/attach/:scheduledGameId</code>).</li><li>Returns the created game — keep its <code>id</code> for the recording, upload and stats routes.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-5v8rk8ww0', 'opt-dnktrerkw')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-dnktrerkw', 'req-5v8rk8ww0')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-scheduled-games-programId-eventId-divisionId', 'opt-post-scheduled-games-programId-eventId-divisionId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-scheduled-games-programId-eventId-divisionId', 'req-post-scheduled-games-programId-eventId-divisionId')">Optional</button>
 </div>
-<div id="req-5v8rk8ww0" class="param-tab-content active">
+<div id="req-post-scheduled-games-programId-eventId-divisionId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">programId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Program</td></tr>
 <tr><td><span class="param-name">eventId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Event</td></tr>
 <tr><td><span class="param-name">divisionId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Division</td></tr>
 </tbody></table>
 </div>
-<div id="opt-dnktrerkw" class="param-tab-content">
+<div id="opt-post-scheduled-games-programId-eventId-divisionId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">description</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Optional description to display as the name of this game</td></tr>
+<tr><td><span class="param-name">courtId</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>CourtId associated with this game</td></tr>
+<tr><td><span class="param-name">startTime</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">number</span></td><td>Unix timestamp representing start of video capture timeframe</td></tr>
+<tr><td><span class="param-name">reportedMinutes</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">number</span></td><td>Number of reported minutes for this game</td></tr>
+<tr><td><span class="param-name">endTime</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">number</span></td><td>Unix timestamp representing the end of video capture timeframe</td></tr>
+<tr><td><span class="param-name">aiAutoProcess</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">boolean</span></td><td>When set to true the AI pipline will automatically trigger processing this game when all attached source media has been prepared</td></tr>
+<tr><td><span class="param-name">processingMode</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Whether this game is annotated (annotate) or video only (none). Omitted on create, it defaults from the program (rootAdmin only)</td></tr>
+<tr><td><span class="param-name">slippageOffset</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">number</span></td><td>Right camera angle slippage amount in seconds</td></tr>
+<tr><td><span class="param-name">season</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Game season</td></tr>
+<tr><td><span class="param-name">notes</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Optional notes related to annotations</td></tr>
+<tr><td><span class="param-name">timezone</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Timezone</td></tr>
+<tr><td><span class="param-name">provider</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Cloud provider the AI worker is to be launched in</td></tr>
+<tr><td><span class="param-name">swimlane</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Specific AI swimlane for processing</td></tr>
+<tr><td><span class="param-name">enableChart</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">boolean</span></td><td>Flag to enable chart for this game</td></tr>
+<tr><td><span class="param-name">enablePlayerMins</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">boolean</span></td><td>Flag to enable player minutes for this game</td></tr>
+<tr><td><span class="param-name">chart</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Chart to use for this game</td></tr>
+<tr><td><span class="param-name">teams</span></td><td><span class="param-in">required</span></td><td><span class="param-type">array</span></td><td>Teams to register. <code>Designation</code> should be something like TeamA/TeamB or Home/Away, etc.</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;description&quot;: &quot;string&quot;,
+  &quot;courtId&quot;: &quot;string&quot;,
+  &quot;startTime&quot;: 0,
+  &quot;reportedMinutes&quot;: 0,
+  &quot;endTime&quot;: 0,
+  &quot;aiAutoProcess&quot;: true,
+  &quot;processingMode&quot;: &quot;annotate&quot;,
+  &quot;slippageOffset&quot;: 120,
+  &quot;season&quot;: &quot;Fall 2022&quot;,
+  &quot;notes&quot;: &quot;string&quot;,
+  &quot;timezone&quot;: &quot;string&quot;,
+  &quot;provider&quot;: &quot;AWS&quot;,
+  &quot;swimlane&quot;: &quot;FULL&quot;,
+  &quot;enableChart&quot;: true,
+  &quot;enablePlayerMins&quot;: true,
+  &quot;chart&quot;: {
+    &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+  },
+  &quot;teams&quot;: [
+    {
+      &quot;designation&quot;: &quot;Home / Away, TeamA / TeamB&quot;,
+      &quot;color&quot;: &quot;red&quot;,
+      &quot;reportedScore&quot;: 0,
+      &quot;teamId&quot;: &quot;string&quot;
+    }
+  ]
+}</code></pre></div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Success.</span></div>
+<div class="response-codes"><span class="response-code success">200 Success.</span><span class="response-code success">201 </span><span class="response-code error">400 Invalid teams, e.g. a team that is not in the division.</span></div>
 <div class="response-body response-body-collapsed" id="post-scheduled-games-programId-eventId-divisionId-response-200" data-lines="26">
 <div class="response-body-header" onclick="toggleResponseBody(this)">
 <span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
@@ -8047,10 +8500,38 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/scheduled-games/{programId}/{eventId}/{divisionId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;description&quot;: &quot;string&quot;,
+  &quot;courtId&quot;: &quot;string&quot;,
+  &quot;startTime&quot;: 0,
+  &quot;reportedMinutes&quot;: 0,
+  &quot;endTime&quot;: 0,
+  &quot;aiAutoProcess&quot;: true,
+  &quot;slippageOffset&quot;: 120,
+  &quot;season&quot;: &quot;Fall 2022&quot;,
+  &quot;notes&quot;: &quot;string&quot;,
+  &quot;timezone&quot;: &quot;string&quot;,
+  &quot;provider&quot;: &quot;AWS&quot;,
+  &quot;swimlane&quot;: &quot;FULL&quot;,
+  &quot;enableChart&quot;: true,
+  &quot;enablePlayerMins&quot;: true,
+  &quot;chart&quot;: {
+    &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+    &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+  },
+  &quot;teams&quot;: [
+    {
+      &quot;designation&quot;: &quot;Home / Away, TeamA / TeamB&quot;,
+      &quot;color&quot;: &quot;red&quot;,
+      &quot;reportedScore&quot;: 0,
+      &quot;teamId&quot;: &quot;string&quot;
+    }
+  ]
+}'</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="get-scheduled-games-insights-scheduledGameId" data-search="get scheduled games insights scheduledgameid get scheduledgame insights get scheduledgame insights. scheduledgameid authorization">
+<div class="endpoint-card" id="get-scheduled-games-insights-scheduledGameId" data-search="get scheduled-games insights scheduledgameid scheduledgame returns the ai-generated written game summary coaching notes for a authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/scheduled-games/insights/{scheduledGameId}</span>
@@ -8059,18 +8540,18 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Get ScheduledGame Insights.</p>
+<div class="endpoint-desc"><p>Returns the AI-generated written insights (game summary / coaching notes) for a game.</p><p><strong>How it works</strong></p><ul><li>Only available once the game is <code>final-approved</code>; earlier calls return <code>400</code>.</li><li>If insights have not been generated yet, the call triggers generation and returns <code>400</code> — retry after a short wait.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-7djz2e9qx', 'opt-vu3bm9sid')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-vu3bm9sid', 'req-7djz2e9qx')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-scheduled-games-insights-scheduledGameId', 'opt-get-scheduled-games-insights-scheduledGameId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-scheduled-games-insights-scheduledGameId', 'req-get-scheduled-games-insights-scheduledGameId')">Optional</button>
 </div>
-<div id="req-7djz2e9qx" class="param-tab-content active">
+<div id="req-get-scheduled-games-insights-scheduledGameId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Scheduled Game uuid to fetch</td></tr>
 </tbody></table>
 </div>
-<div id="opt-vu3bm9sid" class="param-tab-content">
+<div id="opt-get-scheduled-games-insights-scheduledGameId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
@@ -8126,13 +8607,151 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
+<div class="endpoint-card" id="get-scheduled-games-list-all" data-search="get scheduled-games list all return paginated of games lists every scheduled game visible to the caller newest first column direction limit start sportid search status before after statusupdatedbefore statusupdatedafter teamids teamid isapiclient processingmode authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge get">GET</span>
+<span class="endpoint-path">/scheduled-games/list/all</span>
+<span class="endpoint-summary">Return paginated list of all games</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('get-scheduled-games-list-all')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Lists every scheduled game visible to the caller, newest first.</p><p><strong>How it works</strong></p><ul><li>Filter by <code>status</code>, <code>teamIds</code>, <code>sportId</code>, <code>search</code>, game time (<code>before</code> / <code>after</code>, Unix timestamps) and last status change (<code>statusUpdatedBefore</code> / <code>statusUpdatedAfter</code>, ISO-8601 or Unix seconds).</li><li>Polling for finished games? Filter <code>status=final-approved</code> with <code>statusUpdatedAfter</code> set to your last sync time.</li><li>Paginated: <code>limit</code> (default 25, max 50) and <code>start</code> (offset). Sort with <code>column</code> and <code>direction</code> (<code>ASC</code> / <code>DESC</code>).</li></ul></div>
+<h4>Parameters</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
+<tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
+<tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
+<tr><td><span class="param-name">sportId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by sport id</td></tr>
+<tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by owner email, game description, arena / court location, or season.</td></tr>
+<tr><td><span class="param-name">status</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>Optional; Filter by game status</td></tr>
+<tr><td><span class="param-name">before</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Optional; return results up to and including the specified Unix timestamp</td></tr>
+<tr><td><span class="param-name">after</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Optional; return results after and including the specified Unix timestamp</td></tr>
+<tr><td><span class="param-name">statusUpdatedBefore</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Optional; return games whose status last changed at or before this instant. Accepts an ISO-8601 date string or a Unix timestamp in seconds.</td></tr>
+<tr><td><span class="param-name">statusUpdatedAfter</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Optional; return games whose status last changed at or after this instant. Accepts an ISO-8601 date string or a Unix timestamp in seconds.</td></tr>
+<tr><td><span class="param-name">teamIds</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>Array of Team uuids to limit search results</td></tr>
+<tr><td><span class="param-name">teamId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">array</span></td><td>The id of the team to filter the results. This is different from <code>teamIds</code> that performs an OR search in the array of teamIds.</td></tr>
+<tr><td><span class="param-name">isApiClient</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>When true returns games that are flagged as clients of the API</td></tr>
+<tr><td><span class="param-name">processingMode</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Only games with this processingMode. Omitted, lists show annotated games only</td></tr>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 </span></div>
+<div class="response-body response-body-collapsed" id="get-scheduled-games-list-all-response-200" data-lines="88">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('get-scheduled-games-list-all-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">{
+  &quot;meta&quot;: {
+    &quot;total&quot;: 0,
+    &quot;returned&quot;: 0,
+    &quot;offset&quot;: 0,
+    &quot;limit&quot;: 0
+  },
+  &quot;items&quot;: [
+    {
+      &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+      &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+      &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;,
+      &quot;partitionDate&quot;: &quot;string&quot;,
+      &quot;statusUpdatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+      &quot;aiConfig&quot;: {
+        &quot;provider&quot;: &quot;AWS&quot;,
+        &quot;swimlane&quot;: &quot;FULL&quot;,
+        &quot;destination&quot;: &quot;string&quot;,
+        &quot;metadata&quot;: {},
+        &quot;devMode&quot;: true
+      },
+      &quot;liveState&quot;: {
+        &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;,
+        &quot;scheduledGameId&quot;: &quot;string&quot;,
+        &quot;sport&quot;: &quot;basketball&quot;,
+        &quot;lifecycle&quot;: &quot;not_started&quot;,
+        &quot;mode&quot;: &quot;basic&quot;,
+        &quot;seq&quot;: 0,
+        &quot;teams&quot;: [
+          {}
+        ],
+        &quot;period&quot;: 0,
+        &quot;startedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;endedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;config&quot;: {
+          &quot;periodCount&quot;: 0,
+          &quot;periodLengthMs&quot;: 0,
+          &quot;overtimeLengthMs&quot;: 0,
+          &quot;timeoutsPerTeam&quot;: 0,
+          &quot;bestOf&quot;: 0
+        },
+        &quot;clockMs&quot;: 0,
+        &quot;isClockRunning&quot;: true,
+        &quot;clockUpdatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;possession&quot;: &quot;string&quot;,
+        &quot;servingTeam&quot;: &quot;string&quot;,
+        &quot;sidesSwapped&quot;: true
+      },
+      &quot;meta&quot;: {
+        &quot;actions&quot;: {
+          &quot;manual&quot;: 0,
+          &quot;ai&quot;: 0,
+          &quot;final&quot;: 0
+        },
+        &quot;clips&quot;: 0
+      },
+      &quot;deviceGameAssn&quot;: [
+        {
+          &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+          &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+          &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+        }
+      ],
+      &quot;court&quot;: {
+        &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+        &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;,
+        &quot;name&quot;: &quot;string&quot;
+      },
+      &quot;teamGameAssn&quot;: [
+        {
+          &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+          &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+          &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+        }
+      ],
+      &quot;events&quot;: [
+        {
+          &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+          &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+          &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;
+        }
+      ]
+    }
+  ]
+}</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X GET &quot;https://api.sportsvisio-api.com/scheduled-games/list/all&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
+</div></div>
+
 </div>
 
 <!-- Devices -->
 <div class="tag-group" id="tag-devices">
 <div class="tag-group-header"><h3>Devices</h3><span class="tag-count">5 endpoints</span></div>
 
-<div class="endpoint-card" id="get-devices-list-accountId" data-search="get devices list accountid get a list of devices returns a list of device records for the currently authenticated user, unless accountid is specified. column direction limit start search accountid authorization">
+<div class="endpoint-card" id="get-devices-list-accountId" data-search="get devices list accountid a of lists the recording cameras phones registered to an account column direction limit start search authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/devices/list/{accountId}</span>
@@ -8141,12 +8760,12 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Returns a list of Device records for the currently authenticated user, unless accountId is specified.</p>
+<div class="endpoint-desc"><p>Lists the recording devices (cameras, phones) registered to an account.</p><p><strong>How it works</strong></p><ul><li>Omit <code>accountId</code> to list the caller&#x27;s own account&#x27;s devices.</li><li>Filter with <code>search</code>. Paginated: <code>limit</code> (default 25, max 50) and <code>start</code> (offset). Sort with <code>column</code> and <code>direction</code> (<code>ASC</code> / <code>DESC</code>).</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
 <tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
-<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
 <tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
 <tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by device name, model, macAddress, or manufacturer</td></tr>
 <tr><td><span class="param-name">accountId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Optional accountId to retrieve or create devices. If omitted, account of current user is used</td></tr>
@@ -8196,24 +8815,37 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="post-devices-register-accountId" data-search="post devices register accountid register a new device creates device record and registers to account. accountid authorization">
+<div class="endpoint-card" id="post-devices-register-accountId" data-search="post devices register accountid a device registers recording to an account authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/devices/register/{accountId}</span>
-<span class="endpoint-summary">Register a new Device</span>
+<span class="endpoint-summary">Register a Device</span>
 <button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('post-devices-register-accountId')" title="Copy link to this endpoint">#</button>
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Creates Device record and registers to account.</p>
+<div class="endpoint-desc"><p>Registers a recording device to an account.</p><p><strong>How it works</strong></p><ul><li>Body: <code>macAddress</code> (any stable unique identifier for the device), <code>name</code>, and optionally <code>manufacturer</code> and <code>modelNumber</code>.</li><li>Safe to retry: registering a <code>macAddress</code> the account already holds returns the existing device instead of failing.</li><li>Omit <code>accountId</code> to register to the caller&#x27;s own account. Returns the device; use its <code>id</code> to attach it to games.</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">accountId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Optional accountId to retrieve or create devices. If omitted, account of current user is used</td></tr>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">macAddress</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>String Mac address or identifier for Device</td></tr>
+<tr><td><span class="param-name">name</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Friendly name of device for organization</td></tr>
+<tr><td><span class="param-name">manufacturer</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Name of device manufacturer</td></tr>
+<tr><td><span class="param-name">modelNumber</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Manufacturer assigned model number of device</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;macAddress&quot;: &quot;string&quot;,
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;manufacturer&quot;: &quot;Apple&quot;,
+  &quot;modelNumber&quot;: &quot;A1920&quot;
+}</code></pre></div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Success</span></div>
+<div class="response-codes"><span class="response-code success">200 Success</span><span class="response-code success">201 </span></div>
 <div class="response-body" id="post-devices-register-accountId-response-200" data-lines="5">
 <div class="response-body-header" onclick="toggleResponseBody(this)">
 <span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
@@ -8237,10 +8869,15 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/devices/register/{accountId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;macAddress&quot;: &quot;string&quot;,
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;manufacturer&quot;: &quot;Apple&quot;,
+  &quot;modelNumber&quot;: &quot;A1920&quot;
+}'</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="post-devices-attach-scheduledGameId" data-search="post devices attach scheduledgameid attach device to scheduled game attaches a device to the game for recording scheduledgameid authorization">
+<div class="endpoint-card" id="post-devices-attach-scheduledGameId" data-search="post devices attach scheduledgameid device to scheduled game attaches a registered so it can record step 1 of the recording upload flow authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/devices/attach/{scheduledGameId}</span>
@@ -8249,25 +8886,31 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Attaches a device to the game for recording</p>
+<div class="endpoint-desc"><p>Attaches a registered device to a game so it can record it. <strong>Step 1 of the recording/upload flow.</strong></p><p><strong>How it works</strong></p><ul><li>Body: <code>deviceId</code>.</li><li>Moves the game to <code>pending-play</code>.</li><li>Next: open an upload session with <code>POST /devices/init-upload-multipart/:scheduledGameId/:deviceId</code>.</li></ul></div>
 <h4>Parameters</h4>
-<div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-j82jajnye', 'opt-6d32x07tw')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-6d32x07tw', 'req-j82jajnye')">Optional</button>
-</div>
-<div id="req-j82jajnye" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of scheduled game to attach to</td></tr>
-</tbody></table>
-</div>
-<div id="opt-6d32x07tw" class="param-tab-content">
-<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
-</div>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">position</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Position of camera on court</td></tr>
+<tr><td><span class="param-name">goalPosition</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Position of Goal on court.</td></tr>
+<tr><td><span class="param-name">deviceId</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Device uuid identifier to attach</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;position&quot;: &quot;center&quot;,
+  &quot;goalPosition&quot;: {
+    &quot;x&quot;: 0,
+    &quot;y&quot;: 0,
+    &quot;width&quot;: 0,
+    &quot;height&quot;: 0
+  },
+  &quot;deviceId&quot;: &quot;string&quot;
+}</code></pre></div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Success</span></div>
+<div class="response-codes"><span class="response-code success">200 Success</span><span class="response-code success">201 </span><span class="response-code error">404 Not found</span></div>
 <div class="response-body" id="post-devices-attach-scheduledGameId-response-200" data-lines="1">
 <div class="response-body-header" onclick="toggleResponseBody(this)">
 <span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
@@ -8288,10 +8931,19 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/devices/attach/{scheduledGameId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;position&quot;: &quot;center&quot;,
+  &quot;goalPosition&quot;: {
+    &quot;x&quot;: 0,
+    &quot;y&quot;: 0,
+    &quot;width&quot;: 0,
+    &quot;height&quot;: 0
+  },
+  &quot;deviceId&quot;: &quot;string&quot;
+}'</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="get-devices-upload-token-scheduledGameId-deviceId" data-search="get devices upload token scheduledgameid deviceid get upload token to upload source media authorization">
+<div class="endpoint-card" id="get-devices-upload-token-scheduledGameId-deviceId" data-search="get devices upload-token scheduledgameid deviceid upload token to source media issues a short-lived that lets capture client video for this game from device without the caller s own credentials authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/devices/upload-token/{scheduledGameId}/{deviceId}</span>
@@ -8300,7 +8952,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc"></p>
+<div class="endpoint-desc"><p>Issues a short-lived token that lets a capture client upload source video for this game from this device, without the caller&#x27;s own credentials.</p><p><strong>How it works</strong></p><ul><li>The token is tied to the game and device (both must exist, otherwise <code>404</code>) and expires.</li><li>Response: <code>{ token }</code> — send it as a bearer token when uploading.</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
@@ -8330,7 +8982,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="post-devices-init-upload-multipart-scheduledGameId-deviceId" data-search="post devices init upload multipart scheduledgameid deviceid initiate multipart upload for source media creates a multipart upload session for direct s3 upload of source media authorization">
+<div class="endpoint-card" id="post-devices-init-upload-multipart-scheduledGameId-deviceId" data-search="post devices init-upload-multipart scheduledgameid deviceid initiate multipart upload for source media opens a session game s video step 2 of the recording flow authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/devices/init-upload-multipart/{scheduledGameId}/{deviceId}</span>
@@ -8339,11 +8991,38 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Creates a multipart upload session for direct S3 upload of source media</p>
+<div class="endpoint-desc"><p>Opens a multipart upload session for a game&#x27;s source video. <strong>Step 2 of the recording/upload flow.</strong></p><p><strong>How it works</strong></p><ol><li>Split the file into parts and call this with <code>fileName</code>, <code>totalParts</code>, <code>fileSize</code> and the MIME type.</li><li>The response contains <code>uploadInfo</code> (with the <code>uploadId</code> and an <code>expiresAt</code>) and <code>presignedUrls</code> — one URL per part.</li><li><code>PUT</code> each part&#x27;s bytes straight to its presigned URL (this goes to storage, not this API).</li><li>Finish with <code>POST /upload/multipart/:uploadId/complete</code>.</li></ol><p>Upload all parts before <code>expiresAt</code>.</p></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">fileName</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Name of the file to upload</td></tr>
+<tr><td><span class="param-name">totalParts</span></td><td><span class="param-in">required</span></td><td><span class="param-type">number</span></td><td>Total number of parts for the upload</td></tr>
+<tr><td><span class="param-name">fileSize</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">number</span></td><td>Total file size in bytes</td></tr>
+<tr><td><span class="param-name">contentType</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>MIME type of the file</td></tr>
+<tr><td><span class="param-name">useAcceleration</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">boolean</span></td><td>Enable S3 Transfer Acceleration for multipart upload</td></tr>
+<tr><td><span class="param-name">checksums</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">array</span></td><td>Array of checksums for each part (enables checksum validation)</td></tr>
+<tr><td><span class="param-name">checksumAlgorithm</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Checksum algorithm to use for validation (CRC32|CRC32C|SHA1|SHA256)</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;fileName&quot;: &quot;recording.mp4&quot;,
+  &quot;totalParts&quot;: 10,
+  &quot;fileSize&quot;: 52428800,
+  &quot;contentType&quot;: &quot;video/mp4&quot;,
+  &quot;useAcceleration&quot;: false,
+  &quot;checksums&quot;: [
+    {
+      &quot;partNumber&quot;: 0,
+      &quot;checksumSHA256&quot;: &quot;string&quot;,
+      &quot;checksumCRC32&quot;: &quot;string&quot;,
+      &quot;checksumCRC32C&quot;: &quot;string&quot;,
+      &quot;checksumSHA1&quot;: &quot;string&quot;
+    }
+  ],
+  &quot;checksumAlgorithm&quot;: &quot;SHA256&quot;
+}</code></pre></div>
 
 <h4>Responses</h4>
 <div class="response-codes"><span class="response-code success">201 Multipart upload session created successfully</span></div>
@@ -8380,7 +9059,23 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/devices/init-upload-multipart/{scheduledGameId}/{deviceId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;fileName&quot;: &quot;recording.mp4&quot;,
+  &quot;totalParts&quot;: 10,
+  &quot;fileSize&quot;: 52428800,
+  &quot;contentType&quot;: &quot;video/mp4&quot;,
+  &quot;useAcceleration&quot;: false,
+  &quot;checksums&quot;: [
+    {
+      &quot;partNumber&quot;: 0,
+      &quot;checksumSHA256&quot;: &quot;string&quot;,
+      &quot;checksumCRC32&quot;: &quot;string&quot;,
+      &quot;checksumCRC32C&quot;: &quot;string&quot;,
+      &quot;checksumSHA1&quot;: &quot;string&quot;
+    }
+  ],
+  &quot;checksumAlgorithm&quot;: &quot;SHA256&quot;
+}'</code></pre></div>
 </div></div>
 
 </div>
@@ -8389,7 +9084,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <div class="tag-group" id="tag-team-players">
 <div class="tag-group-header"><h3>Team Players</h3><span class="tag-count">3 endpoints</span></div>
 
-<div class="endpoint-card" id="post-teams-players-teamId-programId-eventId-divisionId" data-search="post teams players teamid programid eventid divisionid create teamplayer creates a teamplayer record associated with team. programid eventid divisionid teamid authorization">
+<div class="endpoint-card" id="post-teams-players-teamId-programId-eventId-divisionId" data-search="post teams players teamid programid eventid divisionid create teamplayer creates a new player on team and adds them to the s roster for given division authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/teams/players/{teamId}/{programId}/{eventId}/{divisionId}</span>
@@ -8398,13 +9093,13 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Creates a TeamPlayer record associated with Team.</p>
+<div class="endpoint-desc"><p>Creates a new player on a team and adds them to the team&#x27;s roster for the given division.</p><p><strong>How it works</strong></p><ul><li>Use this for a player who does not exist yet. To roster an existing player into another season or division, use <code>POST /teams/players/division/:teamId/:programId/:eventId/:divisionId</code>.</li><li>The team must already be in the division.</li><li>Returns <code>true</code> on success.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-nerf3ag8g', 'opt-r5t7r3m9h')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-r5t7r3m9h', 'req-nerf3ag8g')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-teams-players-teamId-programId-eventId-divisionId', 'opt-post-teams-players-teamId-programId-eventId-divisionId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-teams-players-teamId-programId-eventId-divisionId', 'req-post-teams-players-teamId-programId-eventId-divisionId')">Optional</button>
 </div>
-<div id="req-nerf3ag8g" class="param-tab-content active">
+<div id="req-post-teams-players-teamId-programId-eventId-divisionId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">programId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Program</td></tr>
 <tr><td><span class="param-name">eventId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Event</td></tr>
@@ -8412,14 +9107,27 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <tr><td><span class="param-name">teamId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of team to add player</td></tr>
 </tbody></table>
 </div>
-<div id="opt-r5t7r3m9h" class="param-tab-content">
+<div id="opt-post-teams-players-teamId-programId-eventId-divisionId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">number</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Jersey number of player</td></tr>
+<tr><td><span class="param-name">name</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Full searchable name of player</td></tr>
+<tr><td><span class="param-name">email</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Email to send the invite</td></tr>
+<tr><td><span class="param-name">externalId</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>External identifier for client integrations</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;number&quot;: &quot;string&quot;,
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;email&quot;: &quot;string&quot;,
+  &quot;externalId&quot;: &quot;string&quot;
+}</code></pre></div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Success.</span></div>
+<div class="response-codes"><span class="response-code success">200 Success.</span><span class="response-code success">201 </span></div>
 <div class="response-body" id="post-teams-players-teamId-programId-eventId-divisionId-response-200" data-lines="1">
 <div class="response-body-header" onclick="toggleResponseBody(this)">
 <span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
@@ -8439,10 +9147,15 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/teams/players/{teamId}/{programId}/{eventId}/{divisionId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;number&quot;: &quot;string&quot;,
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;email&quot;: &quot;string&quot;,
+  &quot;externalId&quot;: &quot;string&quot;
+}'</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="get-teams-players-division-list-teamId-programId-eventId-divisionId" data-search="get teams players division list teamid programid eventid divisionid get list of team players assigned to the team and program event division roster returns a list of team players records for the specified teamid and program event division roster. column direction limit start search hideinactive teamid programid eventid divisionid authorization">
+<div class="endpoint-card" id="get-teams-players-division-list-teamId-programId-eventId-divisionId" data-search="get teams players division list teamid programid eventid divisionid of team assigned to the and program event roster lists a s for one season including each player jersey number that column direction limit start search hideinactive excludeprogrameventdivisionassnid includeinvitestatus authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/teams/players/division/list/{teamId}/{programId}/{eventId}/{divisionId}</span>
@@ -8451,13 +9164,13 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Returns a list of Team Players records for the specified teamId and Program Event Division roster.</p>
+<div class="endpoint-desc"><p>Lists a team&#x27;s roster for one division (season roster), including each player&#x27;s jersey number for that season.</p><p><strong>How it works</strong></p><ul><li>Filter with <code>search</code> (player name); <code>hideInactive=true</code> drops inactive players.</li><li><code>excludeProgramEventDivisionAssnId</code> leaves out players already on another division&#x27;s roster — useful when copying one season&#x27;s roster onto the next.</li><li>Paginated: <code>limit</code> (default 25, max 50) and <code>start</code> (offset). Sort with <code>column</code> and <code>direction</code> (<code>ASC</code> / <code>DESC</code>).</li><li>Responses are cached briefly; a change can take a moment to appear.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-w98lbf77h', 'opt-64pyuhrac')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-64pyuhrac', 'req-w98lbf77h')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-get-teams-players-division-list-teamId-programId-eventId-divisionId', 'opt-get-teams-players-division-list-teamId-programId-eventId-divisionId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-get-teams-players-division-list-teamId-programId-eventId-divisionId', 'req-get-teams-players-division-list-teamId-programId-eventId-divisionId')">Optional</button>
 </div>
-<div id="req-w98lbf77h" class="param-tab-content active">
+<div id="req-get-teams-players-division-list-teamId-programId-eventId-divisionId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">teamId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Team uuid to fetch</td></tr>
 <tr><td><span class="param-name">programId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Program</td></tr>
@@ -8465,14 +9178,16 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <tr><td><span class="param-name">divisionId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Division</td></tr>
 </tbody></table>
 </div>
-<div id="opt-64pyuhrac" class="param-tab-content">
+<div id="opt-get-teams-players-division-list-teamId-programId-eventId-divisionId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
 <tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
-<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
 <tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
 <tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by name</td></tr>
 <tr><td><span class="param-name">hideInactive</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Boolean value to determine if we need to skip inactive players</td></tr>
+<tr><td><span class="param-name">excludeProgramEventDivisionAssnId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Uuid of a program event division assn whose roster members should be left OUT of the results, counted in <code>meta.total</code> as excluded. Use this when offering players to ADD to that roster: adding a player who already holds a slot is rejected, so the caller needs a list of only the linkable ones — and it must be the server that narrows it, or no page past the first can be counted or paged correctly.</td></tr>
+<tr><td><span class="param-name">includeInviteStatus</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Team editors only (SPO-560): when true, each row gains <code>email</code> (invite email on file, or null) and <code>invitation</code> (pending/expired player-invite status, or null). Non-editors get the fields omitted entirely. Bypasses the response cache (the enriched rows are caller-dependent), so pass it only on the management roster screen.</td></tr>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
@@ -8722,7 +9437,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="post-teams-players-division-teamId-programId-eventId-divisionId" data-search="post teams players division teamid programid eventid divisionid add teamplayers to division roster adds teamplayers to the specified program event division roster teamid programid eventid divisionid authorization">
+<div class="endpoint-card" id="post-teams-players-division-teamId-programId-eventId-divisionId" data-search="post teams players division teamid programid eventid divisionid add teamplayers to roster adds existing team a authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/teams/players/division/{teamId}/{programId}/{eventId}/{divisionId}</span>
@@ -8731,13 +9446,13 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Adds TeamPlayers to the specified Program Event Division roster</p>
+<div class="endpoint-desc"><p>Adds existing team players to a division roster.</p><p><strong>How it works</strong></p><ul><li>Body: an array of <code>{ teamPlayerId, jerseyNumber }</code> — the jersey number is per-season, so the same player can wear different numbers in different divisions.</li><li>The team must already be in the division. To create a brand-new player use <code>POST /teams/players/:teamId/:programId/:eventId/:divisionId</code>.</li><li>Returns <code>true</code> on success.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-7hi2qhb93', 'opt-rxs75fesb')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-rxs75fesb', 'req-7hi2qhb93')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-teams-players-division-teamId-programId-eventId-divisionId', 'opt-post-teams-players-division-teamId-programId-eventId-divisionId')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-teams-players-division-teamId-programId-eventId-divisionId', 'req-post-teams-players-division-teamId-programId-eventId-divisionId')">Optional</button>
 </div>
-<div id="req-7hi2qhb93" class="param-tab-content active">
+<div id="req-post-teams-players-division-teamId-programId-eventId-divisionId" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">teamId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Team uuid to fetch</td></tr>
 <tr><td><span class="param-name">programId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Program</td></tr>
@@ -8745,11 +9460,18 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <tr><td><span class="param-name">divisionId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Uuid of Division</td></tr>
 </tbody></table>
 </div>
-<div id="opt-rxs75fesb" class="param-tab-content">
+<div id="opt-post-teams-players-division-teamId-programId-eventId-divisionId" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
+<h4>Request Body</h4>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>[
+  {
+    &quot;teamPlayerId&quot;: &quot;string&quot;,
+    &quot;number&quot;: &quot;string&quot;
+  }
+]</code></pre></div>
 
 <h4>Responses</h4>
 <div class="response-codes"><span class="response-code success">201 </span></div>
@@ -8758,16 +9480,21 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/teams/players/division/{teamId}/{programId}/{eventId}/{divisionId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '[
+  {
+    &quot;teamPlayerId&quot;: &quot;string&quot;,
+    &quot;number&quot;: &quot;string&quot;
+  }
+]'</code></pre></div>
 </div></div>
 
 </div>
 
 <!-- Teams -->
 <div class="tag-group" id="tag-teams">
-<div class="tag-group-header"><h3>Teams</h3><span class="tag-count">2 endpoints</span></div>
+<div class="tag-group-header"><h3>Teams</h3><span class="tag-count">3 endpoints</span></div>
 
-<div class="endpoint-card" id="get-teams-list-programId-eventId-divisionId" data-search="get teams list programid eventid divisionid get a list of teams by program event division returns a list of teams associated with the specified program-event-division. column direction limit start sportid search programid withfinalapprovedonly havinggames column direction limit start sportid search programid withfinalapprovedonly havinggames authorization">
+<div class="endpoint-card" id="get-teams-list-programId-eventId-divisionId" data-search="get teams list programid eventid divisionid a of by program event division lists the entered in one season column direction limit start sportid search withfinalapprovedonly havinggames authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge get">GET</span>
 <span class="endpoint-path">/teams/list/{programId}/{eventId}/{divisionId}</span>
@@ -8776,12 +9503,12 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Returns a list of Teams associated with the specified program-event-division.</p>
+<div class="endpoint-desc"><p>Lists the teams entered in one division (program → season → division).</p><p><strong>How it works</strong></p><ul><li>Filter with <code>search</code> and <code>withFinalApprovedOnly</code>.</li><li>Paginated: <code>limit</code> (default 25, max 50) and <code>start</code> (offset). Sort with <code>column</code> and <code>direction</code> (<code>ASC</code> / <code>DESC</code>).</li><li>Responses are cached briefly; a change can take a moment to appear.</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
 <tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
-<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
 <tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
 <tr><td><span class="param-name">sportId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by sport id</td></tr>
 <tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by team name or owner email</td></tr>
@@ -8790,7 +9517,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <tr><td><span class="param-name">havingGames</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Optional; retrieve only teams with at least one games.</td></tr>
 <tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
 <tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
-<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
 <tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
 <tr><td><span class="param-name">sportId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by sport id</td></tr>
 <tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by team name or owner email</td></tr>
@@ -8859,7 +9586,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
-<div class="endpoint-card" id="post-teams-programId-eventId-divisionId" data-search="post teams programid eventid divisionid create team creates a team record. authorization">
+<div class="endpoint-card" id="post-teams-programId-eventId-divisionId" data-search="post teams programid eventid divisionid create team creates a and enters it into the given division authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/teams/{programId}/{eventId}/{divisionId}</span>
@@ -8868,14 +9595,42 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc">Creates a Team record.</p>
+<div class="endpoint-desc"><p>Creates a team and enters it into the given division.</p><p><strong>How it works</strong></p><ul><li>The team is owned by the caller&#x27;s account and is immediately part of the division, ready for a roster (<code>POST /teams/players/:teamId/:programId/:eventId/:divisionId</code>) and games.</li><li>Returns the created team.</li></ul></div>
 <h4>Parameters</h4>
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">name</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Name of team, publicly visible</td></tr>
+<tr><td><span class="param-name">shortName</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Shortened alternate name of team</td></tr>
+<tr><td><span class="param-name">description</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Shortened alternate name of team</td></tr>
+<tr><td><span class="param-name">imageUrl</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Optional url to uploaded profile image</td></tr>
+<tr><td><span class="param-name">defaultColor</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Optional default color for team</td></tr>
+<tr><td><span class="param-name">awayColor</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Optional default away color for team</td></tr>
+<tr><td><span class="param-name">location</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Optional lat/lng hometown location</td></tr>
+<tr><td><span class="param-name">type</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">string</span></td><td>Team type</td></tr>
+<tr><td><span class="param-name">private</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">boolean</span></td><td>Public / private status</td></tr>
+<tr><td><span class="param-name">sportId</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Sport to create this program under</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;shortName&quot;: &quot;string&quot;,
+  &quot;description&quot;: &quot;string&quot;,
+  &quot;imageUrl&quot;: &quot;string&quot;,
+  &quot;defaultColor&quot;: &quot;string&quot;,
+  &quot;awayColor&quot;: &quot;string&quot;,
+  &quot;location&quot;: {
+    &quot;lat&quot;: &quot;string&quot;,
+    &quot;long&quot;: &quot;string&quot;
+  },
+  &quot;type&quot;: &quot;MINE&quot;,
+  &quot;private&quot;: true,
+  &quot;sportId&quot;: &quot;string&quot;
+}</code></pre></div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Success.</span></div>
+<div class="response-codes"><span class="response-code success">200 Success.</span><span class="response-code success">201 </span></div>
 <div class="response-body" id="post-teams-programId-eventId-divisionId-response-200" data-lines="5">
 <div class="response-body-header" onclick="toggleResponseBody(this)">
 <span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
@@ -8899,7 +9654,87 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/teams/{programId}/{eventId}/{divisionId}&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '{
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;shortName&quot;: &quot;string&quot;,
+  &quot;description&quot;: &quot;string&quot;,
+  &quot;imageUrl&quot;: &quot;string&quot;,
+  &quot;defaultColor&quot;: &quot;string&quot;,
+  &quot;awayColor&quot;: &quot;string&quot;,
+  &quot;location&quot;: {
+    &quot;lat&quot;: &quot;string&quot;,
+    &quot;long&quot;: &quot;string&quot;
+  },
+  &quot;type&quot;: &quot;MINE&quot;,
+  &quot;private&quot;: true,
+  &quot;sportId&quot;: &quot;string&quot;
+}'</code></pre></div>
+</div></div>
+
+<div class="endpoint-card" id="get-teams-list-all" data-search="get teams list all a paginated of lists every team visible to the caller across programs column direction limit start sportid search programid withfinalapprovedonly havinggames authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge get">GET</span>
+<span class="endpoint-path">/teams/list/all</span>
+<span class="endpoint-summary">Get a paginated list of all teams</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('get-teams-list-all')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Lists every team visible to the caller across all programs.</p><p><strong>How it works</strong></p><ul><li>Filter with <code>search</code> (team name), <code>programId</code>, <code>sportId</code>, <code>withFinalApprovedOnly</code> (only teams with at least one final-approved game) and <code>havingGames</code>.</li><li>Paginated: <code>limit</code> (default 25, max 50) and <code>start</code> (offset). Sort with <code>column</code> and <code>direction</code> (<code>ASC</code> / <code>DESC</code>).</li></ul></div>
+<h4>Parameters</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">column</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Column to sort on</td></tr>
+<tr><td><span class="param-name">direction</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Sort order</td></tr>
+<tr><td><span class="param-name">limit</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Limit of records to return (clamped to 50)</td></tr>
+<tr><td><span class="param-name">start</span></td><td><span class="param-in">query</span></td><td><span class="param-type">number</span></td><td>Starting offset of return records</td></tr>
+<tr><td><span class="param-name">sportId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by sport id</td></tr>
+<tr><td><span class="param-name">search</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>Search value to filter results by team name or owner email</td></tr>
+<tr><td><span class="param-name">programId</span></td><td><span class="param-in">query</span></td><td><span class="param-type">string</span></td><td>UUID of program to filter teams by</td></tr>
+<tr><td><span class="param-name">withFinalApprovedOnly</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Optional; retrieve only teams with final-approved games.</td></tr>
+<tr><td><span class="param-name">havingGames</span></td><td><span class="param-in">query</span></td><td><span class="param-type">boolean</span></td><td>Optional; retrieve only teams with at least one games.</td></tr>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 </span></div>
+<div class="response-body response-body-collapsed" id="get-teams-list-all-response-200" data-lines="22">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('get-teams-list-all-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">{
+  &quot;meta&quot;: {
+    &quot;total&quot;: 0,
+    &quot;returned&quot;: 0,
+    &quot;offset&quot;: 0,
+    &quot;limit&quot;: 0
+  },
+  &quot;items&quot;: [
+    {
+      &quot;createdAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+      &quot;updatedAt&quot;: &quot;2026-01-15T10:00:00Z&quot;,
+      &quot;id&quot;: &quot;7a5e7bf4-ad48-4a01-b64b-46f515de2c86&quot;,
+      &quot;meta&quot;: {
+        &quot;players&quot;: 0,
+        &quot;games&quot;: 0,
+        &quot;actions&quot;: 0,
+        &quot;ownerProfile&quot;: {}
+      },
+      &quot;isCurrentChampion&quot;: true
+    }
+  ]
+}</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X GET &quot;https://api.sportsvisio-api.com/teams/list/all&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot;</code></pre></div>
 </div></div>
 
 </div>
@@ -8908,7 +9743,7 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <div class="tag-group" id="tag-scheduled-game-team-assignment">
 <div class="tag-group-header"><h3>Scheduled Game Team Assignment</h3><span class="tag-count">1 endpoint</span></div>
 
-<div class="endpoint-card" id="post-scheduled-games-assigned-scheduledGameTeamAssnId-roster" data-search="post scheduled games assigned scheduledgameteamassnid roster assign a teamplayer to a game roster scheduledgameteamassnid authorization">
+<div class="endpoint-card" id="post-scheduled-games-assigned-scheduledGameTeamAssnId-roster" data-search="post scheduled-games assigned scheduledgameteamassnid roster assign a teamplayer to game sets who played for one side of the authorization">
 <div class="endpoint-header" onclick="toggleEndpoint(this)">
 <span class="method-badge post">POST</span>
 <span class="endpoint-path">/scheduled-games/assigned/{scheduledGameTeamAssnId}/roster</span>
@@ -8917,25 +9752,35 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <span class="endpoint-chevron">&#9654;</span>
 </div>
 <div class="endpoint-body">
-<p class="endpoint-desc"></p>
+<div class="endpoint-desc"><p>Sets who played for one side of a game (the game roster).</p><p><strong>How it works</strong></p><ul><li><code>scheduledGameTeamAssnId</code> is one team&#x27;s side of the game — find it on the game record (<code>GET /scheduled-games/:scheduledGameId</code>).</li><li>Each entry names a season-roster slot (<code>tppedaId</code>) and the jersey <code>number</code> worn.</li><li>An entry <strong>without</strong> <code>tppedaId</code> is a quick-add — &quot;someone wearing this number played&quot;. It is matched to a season slot only when exactly one slot on this side holds that number; otherwise it waits for manual reconciliation.</li><li>Never overwrites an existing attribution. A jersey number already used on this side is rejected.</li><li>Returns <code>true</code> on success.</li></ul></div>
 <h4>Parameters</h4>
 <div class="param-tabs">
-<button class="param-tab active" onclick="switchParamTab(event, 'req-8x4x6ajgt', 'opt-n4q4ai5zb')">Required</button>
-<button class="param-tab" onclick="switchParamTab(event, 'opt-n4q4ai5zb', 'req-8x4x6ajgt')">Optional</button>
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-scheduled-games-assigned-scheduledGameTeamAssnId-roster', 'opt-post-scheduled-games-assigned-scheduledGameTeamAssnId-roster')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-scheduled-games-assigned-scheduledGameTeamAssnId-roster', 'req-post-scheduled-games-assigned-scheduledGameTeamAssnId-roster')">Optional</button>
 </div>
-<div id="req-8x4x6ajgt" class="param-tab-content active">
+<div id="req-post-scheduled-games-assigned-scheduledGameTeamAssnId-roster" class="param-tab-content active">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">scheduledGameTeamAssnId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Scheduled Game Team Assignment uuid to update</td></tr>
 </tbody></table>
 </div>
-<div id="opt-n4q4ai5zb" class="param-tab-content">
+<div id="opt-post-scheduled-games-assigned-scheduledGameTeamAssnId-roster" class="param-tab-content">
 <table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
 </tbody></table>
 </div>
+<h4>Request Body</h4>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>[
+  {
+    &quot;number&quot;: &quot;string&quot;,
+    &quot;minsPlayed&quot;: 0,
+    &quot;starter&quot;: true,
+    &quot;tppedaId&quot;: &quot;string&quot;,
+    &quot;teamPlayerId&quot;: &quot;string&quot;
+  }
+]</code></pre></div>
 
 <h4>Responses</h4>
-<div class="response-codes"><span class="response-code success">200 Success.</span></div>
+<div class="response-codes"><span class="response-code success">200 Success.</span><span class="response-code success">201 </span></div>
 <div class="response-body" id="post-scheduled-games-assigned-scheduledGameTeamAssnId-roster-response-200" data-lines="1">
 <div class="response-body-header" onclick="toggleResponseBody(this)">
 <span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
@@ -8955,11 +9800,89 @@ upload().catch(e =&gt; console.error('Error:', e.response?.data || e.message));<
 <pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/scheduled-games/assigned/{scheduledGameTeamAssnId}/roster&quot; \
   -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{}'</code></pre></div>
+  -d '[
+  {
+    &quot;number&quot;: &quot;string&quot;,
+    &quot;minsPlayed&quot;: 0,
+    &quot;starter&quot;: true,
+    &quot;tppedaId&quot;: &quot;string&quot;,
+    &quot;teamPlayerId&quot;: &quot;string&quot;
+  }
+]'</code></pre></div>
 </div></div>
 
 </div>
 
+
+<!-- Scheduled Game Source Media -->
+<div class="tag-group" id="tag-scheduled-game-source-media">
+<div class="tag-group-header"><h3>Scheduled Game Source Media</h3><span class="tag-count">1 endpoint</span></div>
+
+<div class="endpoint-card" id="post-scheduled-games-source-media-scheduledGameId-import" data-search="post scheduled-games source-media scheduledgameid import source media for a game position from an external url imports video you host as the one camera alternative to multipart upload flow authorization">
+<div class="endpoint-header" onclick="toggleEndpoint(this)">
+<span class="method-badge post">POST</span>
+<span class="endpoint-path">/scheduled-games/source-media/{scheduledGameId}/import</span>
+<span class="endpoint-summary">Import source media for a game/position from an external url</span>
+<button class="endpoint-link-btn" onclick="event.stopPropagation(); copyEndpointLink('post-scheduled-games-source-media-scheduledGameId-import')" title="Copy link to this endpoint">#</button>
+<span class="endpoint-chevron">&#9654;</span>
+</div>
+<div class="endpoint-body">
+<div class="endpoint-desc"><p>Imports a game video from a URL you host, as the source media for one camera <code>position</code> — an alternative to the multipart upload flow.</p><p><strong>How it works</strong></p><ul><li><code>url</code> must be a direct, publicly readable link to the video file — no login, no landing page.</li><li>One video per position: if that position already has source media, the call returns <code>400</code>; delete it or pick another position.</li><li>Uses one game credit, the same as an upload; importing a second position of the same game does not charge again.</li><li>Processing runs in the background. Poll the game (<code>GET /scheduled-games/:scheduledGameId</code>) and watch its <code>status</code>.</li></ul></div>
+<h4>Parameters</h4>
+<div class="param-tabs">
+<button class="param-tab active" onclick="switchParamTab(event, 'req-post-scheduled-games-source-media-scheduledGameId-import', 'opt-post-scheduled-games-source-media-scheduledGameId-import')">Required</button>
+<button class="param-tab" onclick="switchParamTab(event, 'opt-post-scheduled-games-source-media-scheduledGameId-import', 'req-post-scheduled-games-source-media-scheduledGameId-import')">Optional</button>
+</div>
+<div id="req-post-scheduled-games-source-media-scheduledGameId-import" class="param-tab-content active">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">scheduledGameId</span></td><td><span class="param-in">path</span></td><td><span class="param-type">string</span></td><td>Scheduled Game uuid to fetch</td></tr>
+</tbody></table>
+</div>
+<div id="opt-post-scheduled-games-source-media-scheduledGameId-import" class="param-tab-content">
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">Authorization</span></td><td><span class="param-in">header</span></td><td><span class="param-type">string</span></td><td>Session token for current user</td></tr>
+</tbody></table>
+</div>
+<h4>Request Body</h4>
+<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><span class="param-name">url</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Public url of video to import. !!Must not require login credentials or be a landing page!!</td></tr>
+<tr><td><span class="param-name">invert</span></td><td><span class="param-in">optional</span></td><td><span class="param-type">boolean</span></td><td>When true the imported video will be inverted when saved</td></tr>
+<tr><td><span class="param-name">position</span></td><td><span class="param-in">required</span></td><td><span class="param-type">string</span></td><td>Camera position on court. Importer will create a virtual generic recording device to assign.</td></tr>
+</tbody></table>
+<div class="code-block"><div class="code-block-header"><span>application/json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>{
+  &quot;url&quot;: &quot;string&quot;,
+  &quot;invert&quot;: true,
+  &quot;position&quot;: &quot;center&quot;
+}</code></pre></div>
+
+<h4>Responses</h4>
+<div class="response-codes"><span class="response-code success">200 Success</span><span class="response-code success">201 </span></div>
+<div class="response-body" id="post-scheduled-games-source-media-scheduledGameId-import-response-200" data-lines="1">
+<div class="response-body-header" onclick="toggleResponseBody(this)">
+<span class="response-body-toggle"><span class="response-body-chevron">&#9654;</span> Response Body (200)</span>
+<div class="response-body-actions">
+<button class="copy-btn" onclick="event.stopPropagation(); copyResponseBodyCode(this)">Copy</button>
+<button class="response-body-link" onclick="copyResponseBodyLink('post-scheduled-games-source-media-scheduledGameId-import-response-200', event)" title="Copy link to this response">#</button>
+</div>
+</div>
+<div class="response-body-content">
+<div class="response-body-pre">
+<div class="response-body-lines"></div>
+<code class="response-body-code">true</code>
+</div></div>
+</div>
+
+<div class="code-block"><div class="code-block-header"><span>curl</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>curl -X POST &quot;https://api.sportsvisio-api.com/scheduled-games/source-media/{scheduledGameId}/import&quot; \
+  -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+  &quot;url&quot;: &quot;string&quot;,
+  &quot;invert&quot;: true,
+  &quot;position&quot;: &quot;center&quot;
+}&#x27;</code></pre></div>
+</div></div>
+
+</div>
 </section>
 
 <footer class="footer">
