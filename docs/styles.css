@@ -101,13 +101,15 @@ code, pre, .endpoint-path, .param-name {
 }
 
 .sidebar-logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.5px;
+  display: block;
+  line-height: 0;
 }
 
-.sidebar-logo span { color: var(--sv-red); }
+.sidebar-logo img {
+  width: 140px;
+  height: auto;
+  display: block;
+}
 
 .sidebar-subtitle {
   font-size: 11px;
@@ -790,6 +792,10 @@ p code, li code, td code {
 
 .endpoint-card.open .endpoint-body { display: block; padding-top: 18px; }
 .endpoint-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+.endpoint-desc p { margin: 0 0 8px; }
+.endpoint-desc ul, .endpoint-desc ol { margin: 0 0 8px 18px; padding: 0; }
+.endpoint-desc li { margin: 2px 0; }
+.endpoint-desc strong { color: var(--text-primary); font-weight: 600; }
 
 .endpoint-card:target {
   background: var(--accent-light);
